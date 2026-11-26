@@ -55,6 +55,10 @@ jobs:
       # -fork.<date>.<run> sorts and parses like upstream's -nightly.<date>.<run>
       # but matches neither its nightly nor its preview pattern, so the app keeps
       # stable branding. The tag never matches v*.*.*.
+      # Linux and Windows both package on Ubuntu 24.04, like release.yml. Newer
+      # Ubuntu compiles natives past the packager's glibc ceiling. On a Windows
+      # host the packager also bakes in the server compile cache, which exceeds
+      # its Windows payload file limit.
       - id: resolve
         name: Resolve version and build matrix
         env:
@@ -71,8 +75,8 @@ jobs:
           } >> "$GITHUB_OUTPUT"
           all='[
             {"label":"macOS arm64","runner":"macos-latest","platform":"mac","target":"dmg","arch":"arm64","rust_target":"aarch64-apple-darwin"},
-            {"label":"Windows x64","runner":"windows-latest","platform":"win","target":"nsis","arch":"x64","rust_target":"x86_64-pc-windows-msvc"},
-            {"label":"Linux x64","runner":"ubuntu-latest","platform":"linux","target":"AppImage","arch":"x64","rust_target":"x86_64-unknown-linux-gnu"}
+            {"label":"Windows x64","runner":"ubuntu-24.04","platform":"win","target":"nsis","arch":"x64","rust_target":"x86_64-pc-windows-msvc"},
+            {"label":"Linux x64","runner":"ubuntu-24.04","platform":"linux","target":"AppImage","arch":"x64","rust_target":"x86_64-unknown-linux-gnu"}
           ]'
           case "$PLATFORMS" in
             mac) want=mac ;;
@@ -118,6 +122,19 @@ jobs:
         with:
           toolchain: stable
           targets: ${{ matrix.rust_target }}
+
+      - name: Install cargo-xwin
+        if: matrix.platform == 'win'
+        uses: taiki-e/install-action@cfdb7ed4ccc7c7dce37759eae89dc5674b469b39 # v2.90.3
+        with:
+          tool: cargo-xwin@0.23.1
+
+      # The packager only runs a plain cargo build, which cannot link MSVC on Linux.
+      - name: Build Windows resource monitor
+        if: matrix.platform == 'win'
+        run: |
+          cargo xwin build --locked --release --manifest-path native/resource-monitor/Cargo.toml --target "${{ matrix.rust_target }}"
+          echo "T3CODE_DESKTOP_REUSE_RESOURCE_MONITOR=true" >> "$GITHUB_ENV"
 
       - name: Install Linux desktop build libraries
         if: matrix.platform == 'linux'
