@@ -2,7 +2,9 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 import { ThreadRouteView } from "../components/ThreadRouteView";
 import { GlobalVoiceInputIndicator } from "../components/chat/GlobalVoiceInputIndicator";
-import { isAppModalPage } from "../components/sidebar/mainAppLocation";
+import { ThreadBoardPage } from "../components/board/ThreadBoardPage";
+import { isAppModalOverHome, isAppModalPage } from "../components/sidebar/mainAppLocation";
+import { useClientSettings } from "../hooks/useSettings";
 import { SidebarInset } from "../components/ui/sidebar";
 import { resolveThreadRouteTarget } from "../threadRoutes";
 import { retainThreadFindForRoute } from "../components/chat/threadFindStore";
@@ -12,6 +14,7 @@ import { useShownThreadRouteTarget } from "../hooks/useShownThreadRouteTarget";
 function ChatRouteLayout() {
   // Render both routes here so draft promotion keeps the same ChatView mounted.
   const { shownTarget, modalOpen } = useShownThreadRouteTarget();
+  const threadBoardEnabled = useClientSettings((settings) => settings.threadBoardEnabled);
   return (
     <>
       {shownTarget?.kind === "server" && !modalOpen ? (
@@ -20,7 +23,12 @@ function ChatRouteLayout() {
       {shownTarget ? (
         <ThreadRouteView target={shownTarget} background={modalOpen} />
       ) : modalOpen ? (
-        <SidebarInset className="h-dvh" />
+        threadBoardEnabled && isAppModalOverHome() ? (
+          // Fork: Settings or Usage opened from the board keeps the board behind it.
+          <ThreadBoardPage background />
+        ) : (
+          <SidebarInset className="h-dvh" />
+        )
       ) : (
         <Outlet />
       )}

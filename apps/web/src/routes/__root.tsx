@@ -44,6 +44,7 @@ import { SharedTooltipProvider } from "../components/ui/shared-tooltip";
 import { AnchoredToastProvider, ToastProvider } from "../components/ui/toast";
 import { isElectron } from "../env";
 import { getClientSettings, useClientSettings } from "../hooks/useSettings";
+import { isAppModalOverHome, isAppModalPage } from "../components/sidebar/mainAppLocation";
 import {
   deriveLogicalProjectKeyFromSettings,
   derivePhysicalProjectKeyFromPath,
@@ -219,8 +220,17 @@ function RootRouteBranch() {
   const appShell = (
     <CommandPalette>
       {/* Setup starts with an empty workspace, so the Welcome page has no thread list.
-          The thread board is the home page, full screen, and lists every thread itself. */}
-      <AppSidebarLayout showSidebar={!isWelcome && !(threadBoardEnabled && pathname === "/")}>
+          The thread board is the home page, full screen, and lists every thread itself;
+          it stays behind Settings and Usage opened from it. */}
+      <AppSidebarLayout
+        showSidebar={
+          !isWelcome &&
+          !(
+            threadBoardEnabled &&
+            (pathname === "/" || (isAppModalPage(pathname) && isAppModalOverHome()))
+          )
+        }
+      >
         <Outlet />
       </AppSidebarLayout>
     </CommandPalette>

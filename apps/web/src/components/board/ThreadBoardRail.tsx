@@ -14,7 +14,6 @@ import {
   DraftId,
   useComposerDraftStore,
 } from "../../composerDraftStore";
-import { useSidebarProjectGroups } from "../../hooks/useSidebarProjectGroups";
 import { cn } from "../../lib/utils";
 import { buildDraftThreadRouteParams, buildThreadRouteParams } from "../../threadRoutes";
 import { ProjectFavicon } from "../ProjectFavicon";
@@ -26,7 +25,12 @@ import { ThreadBoardCardMenu } from "./ThreadBoardCardMenu";
 import { ThreadBoardFooterIcon } from "./ThreadBoardFooterIcon";
 import { buildRailLanes, BOARD_LANES, type BoardCard, type BoardLane } from "./threadBoard.logic";
 import { useBoardNewThread } from "./useBoardNewThread";
+import { useBoardStageTracking } from "./useBoardStageTracking";
 import { useBoardThreads } from "./useBoardCards";
+import {
+  useBoardProjectLabels,
+  type BoardProjectLabel as ProjectLabel,
+} from "./useBoardProjectLabels";
 
 const LANE_LABEL: Record<BoardLane, { label: string; dotClassName: string }> = {
   needs: { label: msg("Needs you", { $context: "board lane" }), dotClassName: "bg-warning" },
@@ -34,11 +38,6 @@ const LANE_LABEL: Record<BoardLane, { label: string; dotClassName: string }> = {
   done: { label: msg("Done", { $context: "board lane" }), dotClassName: "bg-success" },
 };
 const SETTLED_SHOWN = 10;
-
-type ProjectLabel = {
-  readonly displayName: string;
-  readonly favicon: Parameters<typeof ProjectFavicon>[0]["project"];
-};
 
 /**
  * The board folded into the sidebar while a thread or a new draft has the stage. Same lanes
@@ -53,17 +52,16 @@ export function ThreadBoardRail() {
   const { isMobile, setOpenMobile } = useSidebar();
   const { cards, snoozed, settled } = useBoardThreads();
   const lanes = buildRailLanes(cards);
-  const projectLabels = useProjectLabels();
+  const projectLabels = useBoardProjectLabels();
   const route = useParams({
     strict: false,
     select: (params) => ({
-      threadKey:
-        params.environmentId && params.threadId
-          ? `${params.environmentId}:${params.threadId}`
-          : null,
+      environmentId: params.environmentId ?? null,
+      threadId: params.threadId ?? null,
       draftId: params.draftId ?? null,
     }),
   });
+  useBoardStageTracking(route);
   const drafts = useRailDrafts(route.draftId);
 
   const closeMobile = () => {
@@ -83,7 +81,7 @@ export function ThreadBoardRail() {
   const projectOf = (thread: Pick<EnvironmentThreadShell, "environmentId" | "projectId">) =>
     projectLabels.get(`${thread.environmentId}:${thread.projectId}`) ?? null;
   const isCurrent = (thread: EnvironmentThreadShell) =>
-    route.threadKey === `${thread.environmentId}:${thread.id}`;
+    route.environmentId === thread.environmentId && route.threadId === thread.id;
 
   return (
     <>
@@ -166,6 +164,7 @@ export function ThreadBoardRail() {
               label={gt("Snoozed", { $context: "board rail section" })}
               count={snoozed.length}
               collapsible
+              holdsCurrent={snoozed.some(isCurrent)}
             >
               {snoozed.map((thread) => (
                 <RailPlainRow
@@ -179,7 +178,11 @@ export function ThreadBoardRail() {
             </RailSection>
           )}
           {settled.length === 0 ? null : (
-            <RailSection label={gt("Settled", { $context: "board rail section" })} collapsible>
+            <RailSection
+              label={gt("Settled", { $context: "board rail section" })}
+              collapsible
+              holdsCurrent={settled.slice(0, SETTLED_SHOWN).some(isCurrent)}
+            >
               {settled.slice(0, SETTLED_SHOWN).map((thread) => (
                 <RailPlainRow
                   key={`${thread.environmentId}:${thread.id}`}
@@ -211,9 +214,12 @@ function RailSection(props: {
   dotClassName?: string;
   count?: number;
   collapsible?: boolean;
+  /** A collapsible section holding the thread on screen opens until the user toggles it. */
+  holdsCurrent?: boolean;
   children: ReactNode;
 }) {
-  const [open, setOpen] = useState(!props.collapsible);
+  const [toggled, setToggled] = useState<boolean | null>(null);
+  const open = toggled ?? (!props.collapsible || props.holdsCurrent === true);
   const heading = (
     <>
       {props.dotClassName ? (
@@ -229,7 +235,7 @@ function RailSection(props: {
         <button
           type="button"
           aria-expanded={open}
-          onClick={() => setOpen(!open)}
+          onClick={() => setToggled(!open)}
           className="flex h-6 items-center gap-1.5 rounded-md px-2 text-xs font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
         >
           <ChevronDownIcon
@@ -414,18 +420,4 @@ function useRailDrafts(routeDraftId: string | null): ReadonlyArray<RailDraft> {
       },
     ];
   });
-}
-
-function useProjectLabels(): ReadonlyMap<string, ProjectLabel> {
-  const groups = useSidebarProjectGroups();
-  const labels = new Map<string, ProjectLabel>();
-  for (const group of groups) {
-    for (const ref of group.memberProjectRefs) {
-      labels.set(`${ref.environmentId}:${ref.projectId}`, {
-        displayName: group.displayName,
-        favicon: group,
-      });
-    }
-  }
-  return labels;
 }

@@ -15,7 +15,10 @@ import { SidebarInset } from "../ui/sidebar";
 import { ThreadBoardCard } from "./ThreadBoardCard";
 import { ThreadBoardUndoNotice } from "./ThreadBoardUndoNotice";
 import { ThreadBoardUtilities } from "./ThreadBoardUtilities";
-import { useBoardCards } from "./useBoardCards";
+import { BackToStage } from "./BackToStage";
+import { ThreadBoardShelves } from "./ThreadBoardShelves";
+import { useBoardThreads } from "./useBoardCards";
+import { useBoardProjectLabels } from "./useBoardProjectLabels";
 import { useBoardNewThread } from "./useBoardNewThread";
 import {
   BOARD_LANES,
@@ -36,13 +39,14 @@ const LANE_PRESENTATION: Record<BoardLane, { label: string; dotClassName: string
  * The home page: every thread, in project swimlanes crossed with state lanes. Opening a card
  * or starting a thread folds the board into the sidebar rail (ThreadBoardRail).
  */
-export function ThreadBoardPage() {
+export function ThreadBoardPage(props: { background?: boolean } = {}) {
   const gt = useGT();
   const m = useMessages();
   const navigate = useNavigate();
   const startNewThread = useBoardNewThread();
-  const boardCards = useBoardCards();
+  const { cards: boardCards, snoozed, settled } = useBoardThreads();
   const groups = useSidebarProjectGroups();
+  const projectLabels = useBoardProjectLabels();
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set());
 
@@ -52,10 +56,10 @@ export function ThreadBoardPage() {
     : boardCards;
   const swimlanes = buildBoardSwimlanes(groups, cards);
 
-  const openThread = (card: BoardCard) => {
+  const openThread = (thread: Pick<BoardCard["thread"], "environmentId" | "id">) => {
     void navigate({
       to: "/$environmentId/$threadId",
-      params: buildThreadRouteParams(scopeThreadRef(card.thread.environmentId, card.thread.id)),
+      params: buildThreadRouteParams(scopeThreadRef(thread.environmentId, thread.id)),
     });
   };
   const onBoardKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -77,13 +81,17 @@ export function ThreadBoardPage() {
   };
 
   return (
-    <SidebarInset className="h-dvh min-h-0 overflow-hidden overscroll-y-none">
+    <SidebarInset
+      inert={props.background}
+      className="h-dvh min-h-0 overflow-hidden overscroll-y-none"
+    >
       <header
         className={cn(
           "flex h-[var(--workspace-topbar-height)] shrink-0 items-center gap-3 border-b pr-(--workspace-gutter-end) pl-(--workspace-controls-left)",
           isElectron && "drag-region wco:pr-(--workspace-native-controls-inset)",
         )}
       >
+        <BackToStage />
         <div className="flex w-100 min-w-0 items-center gap-1.5">
           <Button size="sm" onClick={() => startNewThread()}>
             <SquarePenIcon aria-hidden />
@@ -102,6 +110,12 @@ export function ThreadBoardPage() {
             />
           </InputGroup>
         </div>
+        <ThreadBoardShelves
+          snoozed={snoozed}
+          settled={settled}
+          projectLabels={projectLabels}
+          onOpen={openThread}
+        />
         <span className="flex-1" />
         <ThreadBoardUndoNotice />
         <ThreadBoardUtilities />
@@ -191,7 +205,7 @@ export function ThreadBoardPage() {
                                 key={card.thread.id}
                                 card={card}
                                 cardKey={cardKey(card)}
-                                onOpen={() => openThread(card)}
+                                onOpen={() => openThread(card.thread)}
                               />
                             ))}
                           </div>

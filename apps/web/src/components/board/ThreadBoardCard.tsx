@@ -44,7 +44,7 @@ import { resolvePullRequestState } from "../pullRequest/pullRequestPresentation"
 import { Button } from "../ui/button";
 import type { BoardCard } from "./threadBoard.logic";
 import { ThreadBoardCardMenu } from "./ThreadBoardCardMenu";
-import { useLaneChangeAnimation } from "./useLaneChangeAnimation";
+import { useArrivalHighlight, useLaneChangeAnimation } from "./useLaneChangeAnimation";
 
 // Labels and colors match the sidebar's thread status (SidebarThreadRow).
 const STATUS_PRESENTATION: Record<
@@ -132,6 +132,7 @@ export function ThreadBoardCard(props: { card: BoardCard; cardKey: string; onOpe
   const { thread } = card;
   const articleRef = useRef<HTMLElement>(null);
   useLaneChangeAnimation(articleRef, props.cardKey, card.lane);
+  useArrivalHighlight(articleRef, props.cardKey);
   const pullRequest = resolveThreadCurrentPullRequestLink(thread.pullRequests);
   const threadRef = scopeThreadRef(thread.environmentId, thread.id);
   const pullRequestState =

@@ -49,6 +49,11 @@ export function startMainAppLocationTracking(router: AnyRouter): () => void {
   return router.subscribe("onResolved", record);
 }
 
+/** Whether Settings or Usage opened over the home page (fork: the board, when it is on). */
+export function isAppModalOverHome() {
+  return (appModalReturnHref ?? mainAppHref ?? "/").split(/[?#]/, 1)[0] === "/";
+}
+
 /** The thread Settings or Usage opened over, for views mounted while the modal is open. */
 export function getAppModalReturnThreadTarget() {
   return appModalReturnThreadTarget;

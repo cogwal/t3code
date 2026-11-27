@@ -1,5 +1,6 @@
 import { useLayoutEffect, type RefObject } from "react";
 
+import { takeArriving } from "./boardStage";
 import type { BoardLane } from "./threadBoard.logic";
 
 interface Placement {
@@ -55,4 +56,23 @@ export function useLaneChangeAnimation(
       lastPlacement.set(key, { lane, ...measure(element), at: performance.now() });
     };
   }, [ref, key, lane]);
+}
+
+/** Brings a just-started thread's card into view and rings it once, so you see where it went. */
+export function useArrivalHighlight(ref: RefObject<HTMLElement | null>, key: string) {
+  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- one-shot DOM scroll and animation for the card a new thread became; no React state involved
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (element === null || !takeArriving(key)) return;
+    element.scrollIntoView({ block: "nearest", inline: "nearest" });
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    element.animate(
+      [
+        { boxShadow: "0 0 0 3px var(--ring)" },
+        { boxShadow: "0 0 0 3px var(--ring)", offset: 0.6 },
+        { boxShadow: "0 0 0 0 transparent" },
+      ],
+      { duration: 1800, easing: "ease-out" },
+    );
+  }, [ref, key]);
 }
