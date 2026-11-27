@@ -13053,7 +13053,6 @@
   "1537f05cc9b5fbc1": "Done",
   "c8d14c90bd6cd8dd": "Checks failing",
   "6456fecfcaa2109d": "Search threads on the board",
-  "f1f55521bea76543": "Board",
   "3d9b354325f8f174": "No threads match.",
   "1494b7c1d04e0d46": "Nothing on the board. Threads that are running, waiting on you, or done show up here.",
   "1df19884ab0b0a09": "Make a board of every thread your home page. Threads move between Needs you, Working and Done on their own; opening one folds the board into the sidebar.",
@@ -13093,5 +13092,6 @@
   "ec8669a8033856b1": "No threads on the board.",
   "52b3caafc19be3b2": "Search all threads",
   "a94f4f487f873c7c": "Draft",
-  "4d5bf65f7b3a7e59": "{count} need you"
+  "4e5a6e86a3565e8b": "Board",
+  "e37e75744340f109": "Board, {count} need you"
 }

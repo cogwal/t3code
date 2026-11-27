@@ -73,11 +73,12 @@ drives the fake live simulation and the theme.
   and Settings. The last swimlane grows so the lanes reach the bottom of the window. Settings
   and Usage opened from the board keep the board behind them. A thread or draft open: the board
   folds into the **rail**, which replaces upstream's thread list in the sidebar.
-- **Rail:** "← Board" (going home, with the Needs-you count), New thread, search. On web they
-  share the title row with the sidebar toggle (no brand row); on desktop they sit under the title
-  row, which holds the window buttons, the toggle and history; then _Needs you_,
-  _Working_ and _Done_ with every project together, sorted like the board; unsent drafts sit in
-  _Working_ as dashed rows (the draft on screen too, even while empty); then collapsed
+- **Home control:** a board icon (with the Needs-you count) sits beside the sidebar toggle in
+  the title bar on every page but the board, so the way home stays when the sidebar is collapsed.
+- **Rail:** New thread and search (on web in the title row after the toggle and the home
+  control, no brand row; on desktop under the title row); then _Needs you_, _Working_ and
+  _Done_ with every project together, sorted like the board; unsent drafts sit in _Working_ as
+  dashed rows (the draft on screen too, even while empty); then collapsed
   _Snoozed_ and _Settled_ (the latest ten, plus "Search all threads", the command palette),
   which open by themselves while they hold the thread on screen.
   Only _Needs you_ rows stay at full strength, the rest are dimmed and nothing flashes, so the
@@ -263,6 +264,9 @@ Add new entries at the bottom: date, decision, reason.
   board's way into the last thread is a forward "Resume" chip, not a back button. Search and the
   Snoozed/Settled menus move to the right of the board header. Reason: the old arrows made the
   board feel like the secondary page.
+
+- **2026-11-27** The way home to the board is an icon beside the sidebar toggle, not a button
+  inside the rail. Reason: it disappeared with a collapsed sidebar.
 
 ## Prior art (upstream, all closed)
 

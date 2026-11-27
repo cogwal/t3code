@@ -42,6 +42,7 @@ import {
 import { BackgroundThreadAnnouncer } from "./BackgroundThreadAnnouncer";
 import { HistorySwipeNavigation } from "./HistorySwipeNavigation";
 import ThreadSidebar from "./Sidebar";
+import { BoardHomeControl } from "./board/BoardHomeControl";
 import { ThreadBoardRail } from "./board/ThreadBoardRail";
 import { SidebarBrandWidthProbe } from "./sidebar/SidebarChrome";
 import { isAppModalPage } from "./sidebar/mainAppLocation";
@@ -317,6 +318,7 @@ function registerAppShellCommands(router: AnyRouter, shellElement: Element): () 
 
 function SidebarControl({ showSidebar }: { readonly showSidebar: boolean }) {
   const gt = useGT();
+  const threadBoardEnabled = useClientSettings((settings) => settings.threadBoardEnabled);
   const router = useRouter();
   const usagePageOpen = useLocation({ select: (location) => location.pathname === "/usage" });
   const keybindings = useAtomValue(primaryServerKeybindingsAtom);
@@ -413,6 +415,10 @@ function SidebarControl({ showSidebar }: { readonly showSidebar: boolean }) {
           side="bottom"
         />
       ) : null}
+      {/* Fork: home to the board, beside the toggle so it survives a collapsed sidebar. */}
+      {showSidebar && threadBoardEnabled ? (
+        <BoardHomeControl onBackdrop={isSidebarVisible && Boolean(stageBackdropVariant)} />
+      ) : null}
     </div>
   );
 }
@@ -461,6 +467,13 @@ export function AppSidebarLayout({
       : {}
   ) as CSSProperties;
   const sidebarProviderStyle = {
+    // Fork: title-bar content starts after the toggle and the board control beside it.
+    ...(threadBoardEnabled && showSidebar
+      ? {
+          "--workspace-titlebar-content-left":
+            "calc(var(--workspace-controls-left) + 2 * var(--workspace-titlebar-control-size) + 0.25rem + var(--workspace-titlebar-control-gap))",
+        }
+      : {}),
     "--sidebar-width": `${clampThreadSidebarWidth(sidebarWidth, sidebarMinimumWidth, sidebarMaximumWidth)}px`,
     "--panel-animation-duration": `${panelAnimationDurationMs}ms`,
     ...windowControlsInsetStyle,

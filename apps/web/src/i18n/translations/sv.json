@@ -13052,7 +13052,6 @@
   "1537f05cc9b5fbc1": "Klar",
   "c8d14c90bd6cd8dd": "Kontroller misslyckades",
   "6456fecfcaa2109d": "Sök trådar på tavlan",
-  "f1f55521bea76543": "Tavla",
   "3d9b354325f8f174": "Inga trådar matchar.",
   "1494b7c1d04e0d46": "Tavlan är tom. Trådar som arbetar, väntar på dig eller är klara visas här.",
   "1df19884ab0b0a09": "Gör en tavla med alla trådar till din startsida. Trådar flyttas själva mellan Behöver dig, Arbetar och Klar; öppnar du en fälls tavlan ihop i sidofältet.",
@@ -13092,5 +13091,6 @@
   "ec8669a8033856b1": "Inga trådar på tavlan.",
   "52b3caafc19be3b2": "Sök i alla trådar",
   "a94f4f487f873c7c": "Utkast",
-  "4d5bf65f7b3a7e59": "{count} behöver dig"
+  "4e5a6e86a3565e8b": "Tavla",
+  "e37e75744340f109": "Tavla, {count} behöver dig"
 }

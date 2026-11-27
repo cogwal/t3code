@@ -3,7 +3,7 @@ import type { EnvironmentThreadShell } from "@t3tools/client-runtime/state/shell
 import type { EnvironmentId, ProjectId } from "@t3tools/contracts";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { msg, T, useGT, useMessages } from "gt-react";
-import { ArrowLeftIcon, ChevronDownIcon, SearchIcon, SquarePenIcon } from "lucide-react";
+import { ChevronDownIcon, SearchIcon, SquarePenIcon } from "lucide-react";
 import { useState, type MouseEvent, type ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -18,7 +18,6 @@ import { cn } from "../../lib/utils";
 import { buildDraftThreadRouteParams, buildThreadRouteParams } from "../../threadRoutes";
 import { ProjectFavicon } from "../ProjectFavicon";
 import { SidebarChromeFooter, SidebarChromeHeader } from "../sidebar/SidebarChrome";
-import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { SidebarContent, SidebarTrigger, useSidebar } from "../ui/sidebar";
 import { BoardStatusLabel } from "./ThreadBoardCard";
@@ -89,35 +88,14 @@ export function ThreadBoardRail() {
         size="sm"
         variant="outline"
         className="min-w-0 flex-1 justify-start"
-        onClick={() => {
-          closeMobile();
-          void navigate({ to: "/" });
-        }}
-      >
-        <ArrowLeftIcon aria-hidden />
-        <T>Board</T>
-        {lanes.needs.length === 0 ? null : (
-          <Badge
-            size="sm"
-            variant="warning"
-            className="ml-auto"
-            aria-label={gt("{count} need you", { count: lanes.needs.length })}
-          >
-            {lanes.needs.length}
-          </Badge>
-        )}
-      </Button>
-      <Button
-        size="icon-sm"
-        variant="outline"
-        aria-label={gt("New thread")}
         title={gt("New thread (Shift-click to pick a project)")}
         onClick={(event: MouseEvent) => {
           closeMobile();
           startNewThread(event);
         }}
       >
-        <SquarePenIcon />
+        <SquarePenIcon aria-hidden />
+        <T>New thread</T>
       </Button>
       <Button
         size="icon-sm"
@@ -139,7 +117,8 @@ export function ThreadBoardRail() {
           <div className="flex shrink-0 items-center gap-1.5 px-2 pb-2">{controls}</div>
         </>
       ) : (
-        // Web: no brand row; the controls share the title row with the sidebar toggle.
+        // Web: no brand row; the controls share the title row with the sidebar toggle and the
+        // board control (BoardHomeControl), which sit fixed at its left.
         <div className="flex h-[var(--workspace-topbar-height)] shrink-0 items-center gap-1.5 px-2">
           {/* On phones the sheet hides the global toggle, so the row carries its own. */}
           <SidebarTrigger className="md:hidden" aria-label={gt("Toggle main sidebar")} />

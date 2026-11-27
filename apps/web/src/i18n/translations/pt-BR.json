@@ -13045,7 +13045,6 @@
   "1537f05cc9b5fbc1": "Pronta",
   "c8d14c90bd6cd8dd": "Verificações falhando",
   "6456fecfcaa2109d": "Pesquisar threads no quadro",
-  "f1f55521bea76543": "Quadro",
   "3d9b354325f8f174": "Nenhuma thread corresponde.",
   "1494b7c1d04e0d46": "O quadro está vazio. Threads em andamento, esperando por você ou prontas aparecem aqui.",
   "1df19884ab0b0a09": "Faz de um quadro com todas as threads a sua página inicial. As threads passam sozinhas entre Precisa de você, Trabalhando e Pronto; ao abrir uma, o quadro se recolhe na barra lateral.",
@@ -13085,5 +13084,6 @@
   "ec8669a8033856b1": "Nenhuma thread no quadro.",
   "52b3caafc19be3b2": "Pesquisar em todas as threads",
   "a94f4f487f873c7c": "Rascunho",
-  "4d5bf65f7b3a7e59": "{count} precisam de você"
+  "4e5a6e86a3565e8b": "Quadro",
+  "e37e75744340f109": "Quadro, {count} precisam de você"
 }
