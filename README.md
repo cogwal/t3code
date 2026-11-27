@@ -1,3 +1,6 @@
+> **Threadboard** is an unofficial fork based on the T3 Code source code. It is not affiliated
+> with, endorsed by or maintained by T3 Tools, Inc. See [fork/thread-board/VISION.md](fork/thread-board/VISION.md).
+
 <p align="center">
   <a href="https://t3.codes">
     <img src="./assets/prod/t3-black-web-icon-192x192.png" width="80" height="80" alt="T3 Code logo" />

@@ -118,7 +118,8 @@ drives the fake live simulation and the theme.
 ## Open questions
 
 1. **Nightly downloads.** `TRADEMARK.md` forbids distributing builds that carry T3 Code's name,
-   logos or icons; a public download needs our own branding and an "unofficial fork" notice.
+   logos or icons. The name and the "unofficial fork" notice are done (see the 2026-11-27
+   Threadboard entry); the icons still carry the T3 mark and need our own logo first.
    Upstream's release workflow only runs in `pingdotgg/t3code` and needs paid runners and
    signing secrets, so a fork nightly would be a new, smaller workflow. For personal use, a
    local `vp run dist:desktop:dmg:arm64` build needs neither.
@@ -267,6 +268,15 @@ Add new entries at the bottom: date, decision, reason.
 
 - **2026-11-27** The way home to the board is an icon beside the sidebar toggle, not a button
   inside the rail. Reason: it disappeared with a collapsed sidebar.
+- **2026-11-27** The app is called **Threadboard** (domain `threadboard.dev` is free).
+  "Switchboard" was dropped: at least four coding-agent tools already use it. Only what users
+  see changes: display name, window titles, the desktop app ID (`dev.threadboard.app`), and
+  an "unofficial fork of T3 Code" notice in the About panel and README. An installed build
+  runs beside the official app with its own data (`~/.threadboard`, its own Electron
+  profile). Package names, the `t3` CLI, wire contracts and dev data folders stay as
+  upstream has them. Reason: keeps upstream merges cheap (principle 6). Still on T3 branding:
+  icons (no logo yet), the `t3code://` deep-link scheme (Clerk sign-in depends on it), Linux
+  desktop-entry IDs, and t3.codes links.
 
 ## Prior art (upstream, all closed)
 

@@ -7,38 +7,26 @@ import * as PlatformError from "effect/PlatformError";
 
 import { clearStaleGpuCaches, resolveUserDataPath } from "./DesktopUserData.ts";
 
-it.effect.each(["t3code", "T3 Code (Alpha)"])(
-  "preserves Windows credential keys from %s without copying browser databases",
-  (sourceName) =>
+it.effect.each(["darwin", "linux", "win32"] as const)(
+  "keeps an installed Threadboard on its own profile beside T3 Code on %s",
+  (platform) =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const path = yield* Path.Path;
-      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "t3-v2-profile-" });
-      const source = path.join(directory, sourceName);
-      const destination = path.join(directory, "t3code-v2");
-      const state = '{"os_crypt":{"encrypted_key":"test-encrypted-key"}}';
-      yield* fs.makeDirectory(path.join(directory, "T3 Code (Alpha)"), { recursive: true });
-      yield* fs.makeDirectory(path.join(source, "IndexedDB"), { recursive: true });
-      yield* fs.writeFileString(path.join(source, "Local State"), state);
-      yield* fs.writeFileString(path.join(source, "IndexedDB", "LOCK"), "V1 owns this database");
-      yield* resolveUserDataPath({
+      const directory = yield* fs.makeTempDirectoryScoped({ prefix: "threadboard-profile-" });
+      for (const t3Profile of ["t3code", "t3code-v2", "T3 Code (Alpha)"]) {
+        yield* fs.makeDirectory(path.join(directory, t3Profile), { recursive: true });
+        yield* fs.writeFileString(path.join(directory, t3Profile, "Local State"), "T3 Code keys");
+      }
+
+      const userDataPath = yield* resolveUserDataPath({
         appDataDirectory: directory,
         isDevelopment: false,
-        platform: "win32",
+        platform,
       });
-      assert.equal(yield* fs.readFileString(path.join(destination, "Local State")), state);
-      assert.equal(yield* fs.readFileString(path.join(source, "Local State")), state);
-      assert.isFalse(yield* fs.exists(path.join(destination, "IndexedDB")));
-      yield* fs.writeFileString(path.join(destination, "Local State"), "existing V2 state");
-      yield* resolveUserDataPath({
-        appDataDirectory: directory,
-        isDevelopment: false,
-        platform: "win32",
-      });
-      assert.equal(
-        yield* fs.readFileString(path.join(destination, "Local State")),
-        "existing V2 state",
-      );
+
+      assert.equal(userDataPath, path.join(directory, "threadboard"));
+      assert.isFalse(yield* fs.exists(userDataPath));
     }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
 );
 

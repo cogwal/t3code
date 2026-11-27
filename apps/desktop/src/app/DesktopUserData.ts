@@ -39,6 +39,9 @@ export const resolveUserDataPath = Effect.fn("desktop.userData.resolveUserDataPa
   }) {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
+    // Fork: an installed Threadboard gets its own profile so it runs beside T3 Code and never
+    // copies T3 Code's Windows credential keys.
+    if (!input.isDevelopment) return path.join(input.appDataDirectory, "threadboard");
     const names = input.isDevelopment
       ? { current: "t3code-dev", legacy: "T3 Code (Dev)" }
       : { current: "t3code-v2", legacy: "T3 Code (Alpha)" };
