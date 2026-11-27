@@ -73,7 +73,9 @@ drives the fake live simulation and the theme.
   and Settings. The last swimlane grows so the lanes reach the bottom of the window. Settings
   and Usage opened from the board keep the board behind them. A thread or draft open: the board
   folds into the **rail**, which replaces upstream's thread list in the sidebar.
-- **Rail:** "← Board" (going home, with the Needs-you count), New thread, search; then _Needs you_,
+- **Rail:** "← Board" (going home, with the Needs-you count), New thread, search. On web they
+  share the title row with the sidebar toggle (no brand row); on desktop they sit under the title
+  row, which holds the window buttons, the toggle and history; then _Needs you_,
   _Working_ and _Done_ with every project together, sorted like the board; unsent drafts sit in
   _Working_ as dashed rows (the draft on screen too, even while empty); then collapsed
   _Snoozed_ and _Settled_ (the latest ten, plus "Search all threads", the command palette),

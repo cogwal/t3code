@@ -20,7 +20,7 @@ import { ProjectFavicon } from "../ProjectFavicon";
 import { SidebarChromeFooter, SidebarChromeHeader } from "../sidebar/SidebarChrome";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { SidebarContent, useSidebar } from "../ui/sidebar";
+import { SidebarContent, SidebarTrigger, useSidebar } from "../ui/sidebar";
 import { BoardStatusLabel } from "./ThreadBoardCard";
 import { ThreadBoardCardActions } from "./ThreadBoardCardActions";
 import { buildRailLanes, BOARD_LANES, type BoardCard, type BoardLane } from "./threadBoard.logic";
@@ -83,53 +83,71 @@ export function ThreadBoardRail() {
   const isCurrent = (thread: EnvironmentThreadShell) =>
     route.environmentId === thread.environmentId && route.threadId === thread.id;
 
+  const controls = (
+    <>
+      <Button
+        size="sm"
+        variant="outline"
+        className="min-w-0 flex-1 justify-start"
+        onClick={() => {
+          closeMobile();
+          void navigate({ to: "/" });
+        }}
+      >
+        <ArrowLeftIcon aria-hidden />
+        <T>Board</T>
+        {lanes.needs.length === 0 ? null : (
+          <Badge
+            size="sm"
+            variant="warning"
+            className="ml-auto"
+            aria-label={gt("{count} need you", { count: lanes.needs.length })}
+          >
+            {lanes.needs.length}
+          </Badge>
+        )}
+      </Button>
+      <Button
+        size="icon-sm"
+        variant="outline"
+        aria-label={gt("New thread")}
+        title={gt("New thread (Shift-click to pick a project)")}
+        onClick={(event: MouseEvent) => {
+          closeMobile();
+          startNewThread(event);
+        }}
+      >
+        <SquarePenIcon />
+      </Button>
+      <Button
+        size="icon-sm"
+        variant="ghost"
+        aria-label={gt("Search threads")}
+        onClick={() => openCommandPalette()}
+      >
+        <SearchIcon />
+      </Button>
+    </>
+  );
+
   return (
     <>
-      <SidebarChromeHeader isElectron={isElectron} />
-      <div className="flex shrink-0 items-center gap-1.5 px-2 pb-2">
-        <Button
-          size="sm"
-          variant="outline"
-          className="min-w-0 flex-1 justify-start"
-          onClick={() => {
-            closeMobile();
-            void navigate({ to: "/" });
-          }}
-        >
-          <ArrowLeftIcon aria-hidden />
-          <T>Board</T>
-          {lanes.needs.length === 0 ? null : (
-            <Badge
-              size="sm"
-              variant="warning"
-              className="ml-auto"
-              aria-label={gt("{count} need you", { count: lanes.needs.length })}
-            >
-              {lanes.needs.length}
-            </Badge>
-          )}
-        </Button>
-        <Button
-          size="icon-sm"
-          variant="outline"
-          aria-label={gt("New thread")}
-          title={gt("New thread (Shift-click to pick a project)")}
-          onClick={(event: MouseEvent) => {
-            closeMobile();
-            startNewThread(event);
-          }}
-        >
-          <SquarePenIcon />
-        </Button>
-        <Button
-          size="icon-sm"
-          variant="ghost"
-          aria-label={gt("Search threads")}
-          onClick={() => openCommandPalette()}
-        >
-          <SearchIcon />
-        </Button>
-      </div>
+      {isElectron ? (
+        // Desktop: the title row holds the window buttons, the sidebar toggle and history.
+        <>
+          <SidebarChromeHeader isElectron />
+          <div className="flex shrink-0 items-center gap-1.5 px-2 pb-2">{controls}</div>
+        </>
+      ) : (
+        // Web: no brand row; the controls share the title row with the sidebar toggle.
+        <div className="flex h-[var(--workspace-topbar-height)] shrink-0 items-center gap-1.5 px-2">
+          {/* On phones the sheet hides the global toggle, so the row carries its own. */}
+          <SidebarTrigger className="md:hidden" aria-label={gt("Toggle main sidebar")} />
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 md:ml-[calc(var(--workspace-titlebar-content-left)-0.5rem)]">
+            {controls}
+          </div>
+        </div>
+      )}
       <SidebarContent>
         <div className="flex flex-col gap-3 px-2 pb-3">
           {BOARD_LANES.map((lane) => {
