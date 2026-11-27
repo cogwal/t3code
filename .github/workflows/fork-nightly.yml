@@ -143,17 +143,9 @@ jobs:
           sudo apt-get install -y libsecret-1-dev pkg-config libgtk-3-0t64 libnss3 libasound2t64 libgbm1
           command -v magick >/dev/null 2>&1 || command -v convert >/dev/null 2>&1 || sudo apt-get install -y imagemagick
 
-      # Upstream's production Clerk and relay ids, the same public values
-      # release.yml uses for preview builds.
-      - name: Load public relay config
-        run: |
-          set -euo pipefail
-          for key in CLERK_PUBLISHABLE_KEY CLERK_JWT_TEMPLATE CLERK_CLI_OAUTH_CLIENT_ID RELAY_URL; do
-            value="$(sed -n "s|^T3CODE_$key=||p" .env.example)"
-            [[ -n "$value" ]] || { echo "::error::.env.example has no T3CODE_$key"; exit 1; }
-            echo "T3CODE_$key=$value" >> "$GITHUB_ENV"
-          done
-
+      # Threadboard ships without T3 Connect: no Clerk or relay config is set,
+      # so every Connect entry point stays hidden. Remote access is local
+      # network or Tailscale only.
       - name: Align package versions
         run: node scripts/update-release-package-versions.ts "$VERSION"
 
@@ -237,13 +229,13 @@ jobs:
           (cd assets && sha256sum * > SHA256SUMS)
           short="${SHA:0:7}"
           cat > notes.md <<EOF
-          Unofficial fork build of T3 Code from \`$REF\` at $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$SHA.
+          Threadboard build from \`$REF\` at $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$SHA. Threadboard is an unofficial fork based on the T3 Code source code, not affiliated with, endorsed by or maintained by T3 Tools, Inc.
 
-          Version \`$VERSION\`. Not an upstream release and not on any update channel: this build never updates itself. Install the next one by hand.
+          Version \`$VERSION\`. Not on any update channel: this build never updates itself. Install the next one by hand.
 
-          **Unsigned.** On macOS, right-click the app and choose **Open** the first time, or run \`xattr -dr com.apple.quarantine "/Applications/T3 Code.app"\`. On Windows, SmartScreen warns about an unknown publisher: choose **More info → Run anyway**.
+          **Unsigned.** On macOS, right-click the app and choose **Open** the first time, or run \`xattr -dr com.apple.quarantine "/Applications/Threadboard (Beta).app"\`. On Windows, SmartScreen warns about an unknown publisher: choose **More info → Run anyway**.
 
-          It installs as **T3 Code** and shares its data with an upstream T3 Code install on the same machine.
+          It installs as **Threadboard** beside any T3 Code install, with its own data in \`~/.threadboard\`. T3 Connect is not included; reach it remotely over your local network or Tailscale.
           EOF
           gh release create "$TAG" assets/* \
             --repo "$GITHUB_REPOSITORY" \

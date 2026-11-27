@@ -56,7 +56,8 @@ board folded into a rail beside an open thread or new draft.
 
 **Out (for now):** workflow engines or lanes that drive agents (that was #3135's scope);
 creating tasks from the board; manual lane overrides; LLM-generated summaries; moving into
-upstream's pane system; mobile (ignored for now).
+upstream's pane system; mobile (ignored for now); T3 Connect (remote access is local network or
+Tailscale only).
 
 ## UX draft (to iterate on)
 
@@ -275,8 +276,16 @@ Add new entries at the bottom: date, decision, reason.
   runs beside the official app with its own data (`~/.threadboard`, its own Electron
   profile). Package names, the `t3` CLI, wire contracts and dev data folders stay as
   upstream has them. Reason: keeps upstream merges cheap (principle 6). Still on T3 branding:
-  icons (no logo yet), the `t3code://` deep-link scheme (Clerk sign-in depends on it), Linux
-  desktop-entry IDs, and t3.codes links.
+  icons (no logo yet), the `t3code://` scheme (also the desktop page origin that servers
+  allow, so renaming it touches server CORS and remote connections), Linux desktop-entry IDs,
+  and t3.codes links.
+- **2026-11-27** Threadboard ships without T3 Connect; remote access is local network or
+  Tailscale only. Done by leaving the Clerk and relay config out of builds (`fork-nightly.yml`
+  no longer copies it from `.env.example`). Upstream hides every Connect entry point when
+  that config is missing, so no Connect code is deleted. Reason: Connect is T3's hosted
+  service, tied to their accounts and branding; deleting the code would conflict on every
+  upstream merge. Don't put the `T3CODE_CLERK_*` / `T3CODE_RELAY_URL` values in a local
+  `.env`, or local builds get Connect back.
 
 ## Prior art (upstream, all closed)
 
