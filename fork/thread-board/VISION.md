@@ -96,7 +96,7 @@ drives the fake live simulation and the theme.
   sidebar, and it comes back with Reopen (thread view, or Undo right after settling).
 - **Snooze:** a snoozed thread leaves the board until it wakes, then returns to its lane on
   top with a "Woke" chip (cleared once you open it). It wakes early if it starts waiting
-  on you. Snooze sits in the card menu; Undo right after snoozing, and "Wake now" in the
+  on you. Snooze sits on the card's hover controls; Undo right after snoozing, and "Wake now" in the
   thread view. Snoozed threads stay reachable in the rail's _Snoozed_ section.
 - **Card:** status (icon, label, working time) and time since last activity; the title; a grey
   line from thread state, only when it adds something (the running command or tool call, or the
@@ -104,8 +104,9 @@ drives the fake live simulation and the theme.
   **quick actions** (Approve/Deny, answer options, Retry, switch model, Fix checks/Open PR); PR,
   diff and queued chips. Project, branch and model stay off the card (the swimlane and the thread
   view carry them).
-- **Click:** opens the thread beside the rail (there is no peek). A card's "…" menu has Stop
-  (while a run is active), Settle, and Snooze; the rail rows have the same menu.
+- **Click:** opens the thread beside the rail (there is no peek). Hovering a card or rail row
+  swaps its time for Snooze (clock, with the preset menu) and Settle, like the sidebar row.
+  Stop lives in the thread view.
 - **Keyboard:** arrows move between cards on the board (up/down walk a lane across projects),
   Enter opens. No shortcut to toggle the board yet.
 - **Live:** cards slide to their new lane once (short FLIP transition) and flash once.
@@ -252,6 +253,9 @@ Add new entries at the bottom: date, decision, reason.
   the rail auto-opens the section holding the thread on screen. Reason: switching between board
   and thread, and reaching a settled thread from the board, were not discoverable.
 - **2026-11-27** Settings and Usage opened from the board show over the board, not over the rail.
+
+- **2026-11-27** Snooze and Settle show on hover in the card itself, like the sidebar row, instead
+  of under a "…" menu. Stop leaves the card (the thread view has it).
 
 ## Prior art (upstream, all closed)
 

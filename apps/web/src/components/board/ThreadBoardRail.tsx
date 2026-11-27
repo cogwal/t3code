@@ -21,7 +21,7 @@ import { SidebarChromeFooter, SidebarChromeHeader } from "../sidebar/SidebarChro
 import { Button } from "../ui/button";
 import { SidebarContent, useSidebar } from "../ui/sidebar";
 import { BoardStatusLabel } from "./ThreadBoardCard";
-import { ThreadBoardCardMenu } from "./ThreadBoardCardMenu";
+import { ThreadBoardCardActions } from "./ThreadBoardCardActions";
 import { ThreadBoardFooterIcon } from "./ThreadBoardFooterIcon";
 import { buildRailLanes, BOARD_LANES, type BoardCard, type BoardLane } from "./threadBoard.logic";
 import { useBoardNewThread } from "./useBoardNewThread";
@@ -263,7 +263,7 @@ function RailRow(props: {
   onOpen: () => void;
   status: ReactNode;
   project: ProjectLabel | null;
-  menu?: ReactNode;
+  actions?: ReactNode;
 }) {
   return (
     <div
@@ -274,7 +274,7 @@ function RailRow(props: {
         props.quiet && !props.current && "opacity-70 hover:opacity-100",
       )}
     >
-      {/* The whole row opens the thread; the menu sits above this button. */}
+      {/* The whole row opens the thread; the actions sit above this button. */}
       <button
         type="button"
         onClick={props.onOpen}
@@ -282,7 +282,7 @@ function RailRow(props: {
         aria-current={props.current ? "page" : undefined}
         className="absolute inset-0 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
       />
-      <span className="pointer-events-none truncate pr-5 text-sm font-medium">{props.title}</span>
+      <span className="pointer-events-none truncate text-sm font-medium">{props.title}</span>
       <span className="pointer-events-none flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
         {props.status}
         {props.project === null ? null : (
@@ -291,12 +291,8 @@ function RailRow(props: {
             <span className="truncate">{props.project.displayName}</span>
           </span>
         )}
+        {props.actions ? <span className="ml-auto flex">{props.actions}</span> : null}
       </span>
-      {props.menu ? (
-        <span className="absolute top-1 right-1 opacity-0 group-hover/rail-row:opacity-100 has-[:focus-visible]:opacity-100 has-[[data-popup-open]]:opacity-100">
-          {props.menu}
-        </span>
-      ) : null}
     </div>
   );
 }
@@ -318,7 +314,13 @@ function RailCardRow(props: {
       onOpen={props.onOpen}
       status={<BoardStatusLabel card={card} />}
       project={props.project}
-      menu={<ThreadBoardCardMenu card={card} />}
+      actions={
+        <ThreadBoardCardActions
+          card={card}
+          host="rail"
+          surfaceClassName={props.current ? "bg-sidebar-row-active" : "bg-accent"}
+        />
+      }
     />
   );
 }

@@ -43,7 +43,7 @@ import { PullRequestGlyph } from "../pullRequest/pullRequestIcons";
 import { resolvePullRequestState } from "../pullRequest/pullRequestPresentation";
 import { Button } from "../ui/button";
 import type { BoardCard } from "./threadBoard.logic";
-import { ThreadBoardCardMenu } from "./ThreadBoardCardMenu";
+import { ThreadBoardCardActions } from "./ThreadBoardCardActions";
 import { useArrivalHighlight, useLaneChangeAnimation } from "./useLaneChangeAnimation";
 
 // Labels and colors match the sidebar's thread status (SidebarThreadRow).
@@ -161,13 +161,14 @@ export function ThreadBoardCard(props: { card: BoardCard; cardKey: string; onOpe
       />
       <div className="pointer-events-none flex min-w-0 items-center gap-1.5">
         <BoardStatusLabel card={card} />
-        <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">
-          <BoardRelativeTime timestamp={card.activityAt} />
+        <span className="ml-auto">
+          <ThreadBoardCardActions card={card} host="card" surfaceClassName="bg-card">
+            <span className="text-xs text-muted-foreground tabular-nums">
+              <BoardRelativeTime timestamp={card.activityAt} />
+            </span>
+          </ThreadBoardCardActions>
         </span>
       </div>
-      <span className="absolute top-1.5 right-1.5 rounded-md bg-card opacity-0 group-hover/board-card:opacity-100 has-[:focus-visible]:opacity-100 has-[[data-popup-open]]:opacity-100">
-        <ThreadBoardCardMenu card={card} />
-      </span>
       <p className="pointer-events-none line-clamp-2 text-sm font-medium leading-snug">
         {thread.title}
       </p>
