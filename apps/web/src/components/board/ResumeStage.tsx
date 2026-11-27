@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useGT } from "gt-react";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowUpRightIcon } from "lucide-react";
 
 import { useComposerDraftStore } from "../../composerDraftStore";
 import { useQuietThreadShell } from "../../state/entities";
@@ -9,8 +9,11 @@ import { Button } from "../ui/button";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 import { useLastStage } from "./boardStage";
 
-/** Back to the thread or draft the board was opened from, so board and thread are one click apart. */
-export function BackToStage() {
+/**
+ * Picks up the thread or draft that last had the stage, so board and thread are one click apart.
+ * It reads as going forward into work: the board is home, the thread is where you go from it.
+ */
+export function ResumeStage() {
   const gt = useGT();
   const navigate = useNavigate();
   const stage = useLastStage();
@@ -43,17 +46,17 @@ export function BackToStage() {
       render={
         <Button
           size="sm"
-          variant="ghost"
-          className="max-w-56 min-w-0 shrink"
-          aria-label={gt("Back to {title}", { title })}
+          variant="outline"
+          className="max-w-64 min-w-0 shrink"
+          aria-label={gt("Resume {title}", { title })}
           onClick={open}
         />
       }
-      label={gt("Back to {title}", { title })}
+      label={gt("Resume {title}", { title })}
       side="bottom"
     >
-      <ArrowLeftIcon aria-hidden />
       <span className="truncate">{title}</span>
+      <ArrowUpRightIcon aria-hidden className="text-muted-foreground" />
     </SharedTooltipTrigger>
   );
 }

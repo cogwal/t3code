@@ -1,22 +1,69 @@
-import { scopedThreadKey } from "@t3tools/client-runtime/environment";
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
+import type { EnvironmentId, ScopedThreadRef, ThreadId } from "@t3tools/contracts";
+import * as Schema from "effect/Schema";
 import { useSyncExternalStore } from "react";
 
+import { DraftId } from "../../composerDraftStore";
+import { getLocalStorageItem, setLocalStorageItem } from "../../hooks/useLocalStorage";
 import type { ThreadRouteTarget } from "../../threadRoutes";
+
+// Kept across reloads so the board's Resume button still knows where you were.
+const LAST_STAGE_KEY = "t3code:board:last-stage";
+const StoredStage = Schema.Union([
+  Schema.Struct({
+    kind: Schema.Literal("server"),
+    environmentId: Schema.String,
+    threadId: Schema.String,
+  }),
+  Schema.Struct({ kind: Schema.Literal("draft"), draftId: Schema.String }),
+]);
 
 /**
  * What the board remembers about the stage beside the rail: the last thread or draft that had
- * it (for the board's "back" button), and the card a just-sent new thread became (highlighted
+ * it (for the board's Resume button), and the card a just-sent new thread became (highlighted
  * once when the board shows it). Module state, so it survives the board and the rail swapping.
  */
-let lastStage: ThreadRouteTarget | null = null;
+let lastStage: ThreadRouteTarget | null = readStoredStage();
 let arrivingKey: string | null = null;
 const listeners = new Set<() => void>();
 
 export function rememberStage(target: ThreadRouteTarget) {
   if (sameTarget(lastStage, target)) return;
   lastStage = target;
+  try {
+    setLocalStorageItem(
+      LAST_STAGE_KEY,
+      target.kind === "server"
+        ? {
+            kind: "server" as const,
+            environmentId: target.threadRef.environmentId,
+            threadId: target.threadRef.threadId,
+          }
+        : { kind: "draft" as const, draftId: target.draftId },
+      StoredStage,
+    );
+  } catch {
+    // Storage can be unavailable (private windows); Resume then lasts for this session only.
+  }
   for (const listener of listeners) listener();
+}
+
+function readStoredStage(): ThreadRouteTarget | null {
+  try {
+    const stored = getLocalStorageItem(LAST_STAGE_KEY, StoredStage);
+    if (stored === null) return null;
+    return stored.kind === "server"
+      ? {
+          kind: "server",
+          threadRef: scopeThreadRef(
+            stored.environmentId as EnvironmentId,
+            stored.threadId as ThreadId,
+          ),
+        }
+      : { kind: "draft", draftId: DraftId.make(stored.draftId) };
+  } catch {
+    return null;
+  }
 }
 
 export function useLastStage(): ThreadRouteTarget | null {

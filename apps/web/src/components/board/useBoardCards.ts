@@ -35,7 +35,3 @@ export function useBoardThreads(): BoardThreads {
   settled.sort((a, b) => (b.settledAt ?? "").localeCompare(a.settledAt ?? ""));
   return { cards, snoozed, settled };
 }
-
-export function useBoardCards(): ReadonlyArray<BoardCard> {
-  return useBoardThreads().cards;
-}

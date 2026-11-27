@@ -3,7 +3,7 @@ import type { EnvironmentThreadShell } from "@t3tools/client-runtime/state/shell
 import type { EnvironmentId, ProjectId } from "@t3tools/contracts";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { msg, T, useGT, useMessages } from "gt-react";
-import { ChevronDownIcon, SearchIcon, SquarePenIcon } from "lucide-react";
+import { ArrowLeftIcon, ChevronDownIcon, SearchIcon, SquarePenIcon } from "lucide-react";
 import { useState, type MouseEvent, type ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -18,11 +18,11 @@ import { cn } from "../../lib/utils";
 import { buildDraftThreadRouteParams, buildThreadRouteParams } from "../../threadRoutes";
 import { ProjectFavicon } from "../ProjectFavicon";
 import { SidebarChromeFooter, SidebarChromeHeader } from "../sidebar/SidebarChrome";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { SidebarContent, useSidebar } from "../ui/sidebar";
 import { BoardStatusLabel } from "./ThreadBoardCard";
 import { ThreadBoardCardActions } from "./ThreadBoardCardActions";
-import { ThreadBoardFooterIcon } from "./ThreadBoardFooterIcon";
 import { buildRailLanes, BOARD_LANES, type BoardCard, type BoardLane } from "./threadBoard.logic";
 import { useBoardNewThread } from "./useBoardNewThread";
 import { useBoardStageTracking } from "./useBoardStageTracking";
@@ -96,8 +96,18 @@ export function ThreadBoardRail() {
             void navigate({ to: "/" });
           }}
         >
-          <ThreadBoardFooterIcon />
+          <ArrowLeftIcon aria-hidden />
           <T>Board</T>
+          {lanes.needs.length === 0 ? null : (
+            <Badge
+              size="sm"
+              variant="warning"
+              className="ml-auto"
+              aria-label={gt("{count} need you", { count: lanes.needs.length })}
+            >
+              {lanes.needs.length}
+            </Badge>
+          )}
         </Button>
         <Button
           size="icon-sm"

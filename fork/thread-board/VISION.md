@@ -66,14 +66,14 @@ drives the fake live simulation and the theme.
 
 - **Home:** with the toggle on, `/` is the board. The app opens on it; old `/board` links
   redirect there. The server's startup jump to its bootstrap thread is skipped.
-- **Two sizes, one surface.** Nothing open: the board fills the window, no sidebar. Header,
-  left to right: Back to the last thread or draft (its title), New thread and search, then
-  _Snoozed_ and _Settled_ menus (the threads that left the board, one click away; Settled lists
-  the latest ten plus "Search all threads"); on the right the update pill, Pull requests,
-  Issues, Usage and Settings (the sidebar footer's links). Settings and Usage opened from the
-  board keep the board behind them. A thread or draft open: the board folds into the **rail**,
-  which replaces upstream's thread list in the sidebar (resizable like it).
-- **Rail:** Board button (with the Needs-you count), New thread, search; then _Needs you_,
+- **Two sizes, one surface.** Nothing open: the board fills the window, no sidebar. Header:
+  New thread and a **Resume** chip (the last thread or draft, "title ↗", kept across reloads) on
+  the left; on the right the _Snoozed_ and _Settled_ menus (Settled lists the latest ten plus
+  "Search all threads"), the search field, then the update pill, Pull requests, Issues, Usage
+  and Settings. The last swimlane grows so the lanes reach the bottom of the window. Settings
+  and Usage opened from the board keep the board behind them. A thread or draft open: the board
+  folds into the **rail**, which replaces upstream's thread list in the sidebar.
+- **Rail:** "← Board" (going home, with the Needs-you count), New thread, search; then _Needs you_,
   _Working_ and _Done_ with every project together, sorted like the board; unsent drafts sit in
   _Working_ as dashed rows (the draft on screen too, even while empty); then collapsed
   _Snoozed_ and _Settled_ (the latest ten, plus "Search all threads", the command palette),
@@ -85,7 +85,7 @@ drives the fake live simulation and the theme.
   rail it starts in the project on screen (Shift-click picks). Either way the regular draft
   composer opens beside the rail, so model, worktree and `t3.json` defaults work as usual.
   **Sending it returns to the board**, where its new card scrolls into view and rings once;
-  "Back to" in the header (or browser Back) goes into the thread.
+  the Resume chip (or browser Back) goes into the thread.
 - **Layout:** one **swimlane per project** (rows; projects with Needs-you cards first, then
   sidebar order; collapsible; hidden when empty), crossed with three **lanes** (columns): _Needs you_ → _Working_ → _Done_.
   A project filter and a text filter sit in the header.
@@ -256,6 +256,11 @@ Add new entries at the bottom: date, decision, reason.
 
 - **2026-11-27** Snooze and Settle show on hover in the card itself, like the sidebar row, instead
   of under a "…" menu. Stop leaves the card (the thread view has it).
+
+- **2026-11-27** Direction reads board-first: the rail's button is "← Board" (going home) and the
+  board's way into the last thread is a forward "Resume" chip, not a back button. Search and the
+  Snoozed/Settled menus move to the right of the board header. Reason: the old arrows made the
+  board feel like the secondary page.
 
 ## Prior art (upstream, all closed)
 

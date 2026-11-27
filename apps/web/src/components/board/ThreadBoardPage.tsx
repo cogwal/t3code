@@ -15,7 +15,7 @@ import { SidebarInset } from "../ui/sidebar";
 import { ThreadBoardCard } from "./ThreadBoardCard";
 import { ThreadBoardUndoNotice } from "./ThreadBoardUndoNotice";
 import { ThreadBoardUtilities } from "./ThreadBoardUtilities";
-import { BackToStage } from "./BackToStage";
+import { ResumeStage } from "./ResumeStage";
 import { ThreadBoardShelves } from "./ThreadBoardShelves";
 import { useBoardThreads } from "./useBoardCards";
 import { useBoardProjectLabels } from "./useBoardProjectLabels";
@@ -91,33 +91,32 @@ export function ThreadBoardPage(props: { background?: boolean } = {}) {
           isElectron && "drag-region wco:pr-(--workspace-native-controls-inset)",
         )}
       >
-        <BackToStage />
-        <div className="flex w-100 min-w-0 items-center gap-1.5">
-          <Button size="sm" onClick={() => startNewThread()}>
-            <SquarePenIcon aria-hidden />
-            <T>New thread</T>
-          </Button>
-          <InputGroup className="min-w-0 flex-1">
-            <InputGroupAddon>
-              <SearchIcon aria-hidden />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="search"
-              aria-label={gt("Search threads on the board")}
-              placeholder={gt("Search threads")}
-              value={query}
-              onChange={(event) => setQuery(event.currentTarget.value)}
-            />
-          </InputGroup>
-        </div>
+        <Button size="sm" onClick={() => startNewThread()}>
+          <SquarePenIcon aria-hidden />
+          <T>New thread</T>
+        </Button>
+        <ResumeStage />
+        <span className="flex-1" />
+        <ThreadBoardUndoNotice />
         <ThreadBoardShelves
           snoozed={snoozed}
           settled={settled}
           projectLabels={projectLabels}
           onOpen={openThread}
         />
-        <span className="flex-1" />
-        <ThreadBoardUndoNotice />
+        <InputGroup className="w-60 min-w-28 shrink">
+          <InputGroupAddon>
+            <SearchIcon aria-hidden />
+          </InputGroupAddon>
+          <InputGroupInput
+            type="search"
+            aria-label={gt("Search threads on the board")}
+            placeholder={gt("Search threads")}
+            value={query}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+          />
+        </InputGroup>
+        <span aria-hidden className="h-5 w-px shrink-0 bg-border" />
         <ThreadBoardUtilities />
       </header>
 
@@ -125,7 +124,7 @@ export function ThreadBoardPage(props: { background?: boolean } = {}) {
         <div
           data-board-scroll=""
           onKeyDown={onBoardKeyDown}
-          className="min-h-0 flex-1 overflow-auto px-4 pb-6 scrollbar-gutter-both"
+          className="flex min-h-0 flex-1 flex-col overflow-auto px-4 pb-4 scrollbar-gutter-both"
         >
           {swimlanes.length === 0 ? (
             <p className="mx-auto mt-16 max-w-sm text-center text-sm text-muted-foreground">
@@ -139,7 +138,8 @@ export function ThreadBoardPage(props: { background?: boolean } = {}) {
               )}
             </p>
           ) : (
-            <div className="min-w-[46rem]">
+            // The last swimlane grows, so its lanes reach the bottom instead of stopping mid-page.
+            <div className="flex min-w-[46rem] grow flex-col">
               <div className="sticky top-0 z-10 grid grid-cols-3 gap-2.5 bg-background surface-grain pt-3 pb-1.5">
                 {BOARD_LANES.map((lane) => (
                   <div key={lane} className="flex items-center gap-2 px-1 text-sm font-semibold">
@@ -157,7 +157,11 @@ export function ThreadBoardPage(props: { background?: boolean } = {}) {
               {swimlanes.map(({ group, lanes }) => {
                 const isCollapsed = collapsed.has(group.projectKey);
                 return (
-                  <section key={group.projectKey} className="mt-2.5" aria-label={group.displayName}>
+                  <section
+                    key={group.projectKey}
+                    className="mt-2.5 flex flex-col last:grow"
+                    aria-label={group.displayName}
+                  >
                     <button
                       type="button"
                       aria-expanded={!isCollapsed}
@@ -191,7 +195,7 @@ export function ThreadBoardPage(props: { background?: boolean } = {}) {
                       </span>
                     </button>
                     {isCollapsed ? null : (
-                      <div className="mt-1 grid grid-cols-3 gap-2.5">
+                      <div className="mt-1 grid grow grid-cols-3 gap-2.5">
                         {BOARD_LANES.map((lane) => (
                           <div
                             key={lane}
