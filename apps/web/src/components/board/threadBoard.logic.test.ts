@@ -4,6 +4,7 @@ import { describe, expect, it } from "vite-plus/test";
 import type { SidebarThreadStatus } from "../Sidebar.logic";
 import {
   buildBoardSwimlanes,
+  buildRailLanes,
   resolveBoardArrowTarget,
   resolveBoardLane,
   type BoardLane,
@@ -27,6 +28,28 @@ describe("resolveBoardLane", () => {
 
   it("moves a finished thread whose pull request checks fail to Needs you", () => {
     expect(resolveBoardLane({ status: "ready", pullRequestChecksFailing: true })).toBe("needs");
+  });
+});
+
+describe("buildRailLanes", () => {
+  const card = (id: string, lane: BoardLane, minute: number) => ({
+    id,
+    lane,
+    activityAt: `2026-11-27T10:${String(minute).padStart(2, "0")}:00.000Z`,
+  });
+
+  it("queues Needs you oldest first and shows the other lanes newest first", () => {
+    const lanes = buildRailLanes([
+      card("n-late", "needs", 30),
+      card("n-early", "needs", 10),
+      card("w-early", "working", 5),
+      card("w-late", "working", 40),
+      card("d-early", "done", 1),
+      card("d-late", "done", 2),
+    ]);
+    expect(lanes.needs.map((entry) => entry.id)).toEqual(["n-early", "n-late"]);
+    expect(lanes.working.map((entry) => entry.id)).toEqual(["w-late", "w-early"]);
+    expect(lanes.done.map((entry) => entry.id)).toEqual(["d-late", "d-early"]);
   });
 });
 

@@ -43,6 +43,7 @@ import { PullRequestGlyph } from "../pullRequest/pullRequestIcons";
 import { resolvePullRequestState } from "../pullRequest/pullRequestPresentation";
 import { Button } from "../ui/button";
 import type { BoardCard } from "./threadBoard.logic";
+import { ThreadBoardCardMenu } from "./ThreadBoardCardMenu";
 import { useLaneChangeAnimation } from "./useLaneChangeAnimation";
 
 // Labels and colors match the sidebar's thread status (SidebarThreadRow).
@@ -124,12 +125,7 @@ export function BoardStatusLabel(props: { card: BoardCard }) {
   );
 }
 
-export function ThreadBoardCard(props: {
-  card: BoardCard;
-  cardKey: string;
-  selected: boolean;
-  onOpen: (event: MouseEvent<HTMLButtonElement>) => void;
-}) {
+export function ThreadBoardCard(props: { card: BoardCard; cardKey: string; onOpen: () => void }) {
   const gt = useGT();
   const m = useMessages();
   const { card } = props;
@@ -151,8 +147,7 @@ export function ThreadBoardCard(props: {
     <article
       ref={articleRef}
       className={cn(
-        "relative flex flex-col gap-1.5 rounded-lg border bg-card px-3 py-2.5 shadow-xs/5 transition-colors has-[>button:hover]:border-foreground/20",
-        props.selected && "border-primary ring-1 ring-primary ring-inset",
+        "group/board-card relative flex flex-col gap-1.5 rounded-lg border bg-card px-3 py-2.5 shadow-xs/5 transition-colors has-[>button:hover]:border-foreground/20",
       )}
     >
       {/* The whole card opens the thread; controls inside it sit above this button. */}
@@ -160,7 +155,6 @@ export function ThreadBoardCard(props: {
         type="button"
         onClick={props.onOpen}
         aria-label={gt("Open {title}", { title: thread.title })}
-        aria-pressed={props.selected}
         data-board-card={props.cardKey}
         className="absolute inset-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
       />
@@ -170,6 +164,9 @@ export function ThreadBoardCard(props: {
           <BoardRelativeTime timestamp={card.activityAt} />
         </span>
       </div>
+      <span className="absolute top-1.5 right-1.5 rounded-md bg-card opacity-0 group-hover/board-card:opacity-100 has-[:focus-visible]:opacity-100 has-[[data-popup-open]]:opacity-100">
+        <ThreadBoardCardMenu card={card} />
+      </span>
       <p className="pointer-events-none line-clamp-2 text-sm font-medium leading-snug">
         {thread.title}
       </p>
@@ -222,7 +219,7 @@ export function ThreadBoardCard(props: {
 }
 
 /** What the thread is waiting on, with the actions that answer it from the board. */
-export function BoardCardRequest(props: {
+function BoardCardRequest(props: {
   card: BoardCard;
   threadRef: ScopedThreadRef;
   pullRequestUrl: string | null;

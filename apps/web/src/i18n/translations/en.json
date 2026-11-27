@@ -13052,13 +13052,11 @@
   "3d621619bad5946d": "Working",
   "1537f05cc9b5fbc1": "Done",
   "c8d14c90bd6cd8dd": "Checks failing",
-  "378a63bdf3519c5e": "Back",
   "6456fecfcaa2109d": "Search threads on the board",
   "f1f55521bea76543": "Board",
-  "485dca271e0cf399": "Board",
   "3d9b354325f8f174": "No threads match.",
   "1494b7c1d04e0d46": "Nothing on the board. Threads that are running, waiting on you, or done show up here.",
-  "6346a23d8d447014": "Add a board of every thread to the sidebar footer. Threads move between Needs you, Working and Done on their own, grouped by project.",
+  "1df19884ab0b0a09": "Make a board of every thread your home page. Threads move between Needs you, Working and Done on their own; opening one folds the board into the sidebar.",
   "cb65b071f68809cc": "Thread board",
   "c662a9233320e2a3": "beta kanban lanes swimlanes overview needs you working done",
   "aa14acb0ea65d943": "Checks running",
@@ -13077,26 +13075,9 @@
     "."
   ],
   "30e5685f395a35b8": "Open pull request",
-  "e654396f19a21def": "Thread details for {title}",
-  "b4013dbb802089b2": "Close details",
-  "89a073988bdb4b92": "Marks the thread done and takes it off the board",
-  "149c9b92febb3d73": "Takes the thread off the board until it wakes",
-  "084cdbd230901fd6": "Could not send your message.",
-  "f20fcc56c1195909": "Queue a follow-up…",
-  "31edc03e0a69bc68": "Send a follow-up…",
-  "cb290ed8899e0ba7": [
-    "Open pull request #",
-    {
-      "i": 1,
-      "k": "_gt_value_1",
-      "v": "v"
-    }
-  ],
   "39b4070d872d2028": "Snooze",
   "6badf1ab0be9364c": "Open board",
   "aed763efb0a6d555": "New thread",
-  "e2f5a3551c85ac34": "You",
-  "7433207270b89442": "Latest messages",
   "717c1c47a852a1a5": "Pause narration",
   "0eceb5780908eb6c": "Read aloud",
   "3ee98da81538c6de": "Could not play narration.",
@@ -13105,5 +13086,13 @@
   "5807c08e225c6b3d": "Download",
   "0d50b5bfe7151ece": "Could not download file",
   "eb1fd384ad5919dd": "Internal note",
-  "b45f0b467e9406d0": "Reply to customer"
+  "b45f0b467e9406d0": "Reply to customer",
+  "08bd8cd7b2ed4f06": "Takes it off the board",
+  "82d76982135006eb": "New thread (Shift-click to pick a project)",
+  "da37e73cfb9fce24": "Snoozed",
+  "79f3b731658564be": "Settled",
+  "36c06d0649b5c076": "Open draft {title}",
+  "ec8669a8033856b1": "No threads on the board.",
+  "52b3caafc19be3b2": "Search all threads",
+  "a94f4f487f873c7c": "Draft"
 }

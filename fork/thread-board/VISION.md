@@ -16,6 +16,10 @@ changes. A card is big enough to carry a very short status: what the agent is do
 it is asking, and what is ready to review. The developer can deal with most cards right
 from the board and jump into the full thread only when needed.
 
+The board is the **main overview**: T3 Code opens on it. Opening a thread or starting a new
+one never hides the board completely; it folds into a quiet rail beside the thread, which
+keeps the attention.
+
 ## Why
 
 T3 Code's sidebar is a list. Once several agents run in parallel, finding the one waiting
@@ -30,22 +34,25 @@ threads. The board turns that into one view you can scan.
 2. **Lanes come from state.** A thread moves because its state changed, never because
    someone dragged it. No second source of truth for status.
 3. **Triage without leaving the board.** The usual actions (approve, answer a question,
-   send a follow-up, open the PR) work from the board itself.
+   open the PR, settle, snooze) work from the board itself; anything deeper opens the thread
+   beside the rail.
 4. **Reuse what exists.** Read thread state through `packages/client-runtime`. Add server
    work only where the board truly needs data the client can't get today.
 5. **Performance is a feature.** Many live cards must not mean heavy websocket traffic or
    lots of re-rendering. Follow upstream AGENTS.md and
    `docs/internals/16_performance-regressions.md`.
 6. **Isolated and switchable.** The board sits behind a Labs toggle and touches upstream
-   code as little as possible, so pulling upstream changes stays cheap and the board could
-   be proposed upstream later.
+   code as little as possible, so pulling upstream changes stays cheap. Making the board home
+   and swapping the sidebar touch a few upstream files (`__root.tsx`, `_chat.index.tsx`,
+   `AppSidebarLayout.tsx`); each touch is a small, commented branch on the toggle. Upstream's
+   `Sidebar` itself is left alone.
 7. **Smallest model that works** (Theo's note in AGENTS.md applies here too).
 
 ## Scope
 
-**In (first version):** web and desktop; a board covering every project with a project
-filter; lanes set automatically; cards with a short status; a peek panel for triage;
-navigation into the full thread.
+**In (first version):** web and desktop; the board as home, covering every project with a
+project filter; lanes set automatically; cards with a short status and quick actions; the
+board folded into a rail beside an open thread or new draft.
 
 **Out (for now):** workflow engines or lanes that drive agents (that was #3135's scope);
 creating tasks from the board; manual lane overrides; LLM-generated summaries; moving into
@@ -57,11 +64,22 @@ The clickable prototype lives at [prototype/index.html](prototype/index.html) (o
 browser; fake data, no build). It is the reference for phase 3; its "Prototype" panel only
 drives the fake live simulation and the theme.
 
-- **Entry point:** a board icon in the sidebar footer, with a Needs-you count.
-- **Board layout:** **full screen**; the sidebar hides while the board is open. Top left, where
-  the sidebar keeps them on the main page, sit Back (to the last thread), **New thread** and
-  search, lined up with the left panel. New thread opens in that panel with a project picker;
-  the new card arrives under _Working_ and you stay on the board.
+- **Home:** with the toggle on, `/` is the board. The app opens on it; old `/board` links
+  redirect there. The server's startup jump to its bootstrap thread is skipped.
+- **Two sizes, one surface.** Nothing open: the board fills the window, no sidebar. Header:
+  New thread and search on the left; update pill, Pull requests, Issues, Usage and Settings on
+  the right (the sidebar footer's links). A thread or draft open: the board folds into the
+  **rail**, which replaces upstream's thread list in the sidebar (resizable like it).
+- **Rail:** Board button (with the Needs-you count), New thread, search; then _Needs you_,
+  _Working_ and _Done_ with every project together, sorted like the board; unsent drafts sit in
+  _Working_ as dashed rows (the draft on screen too, even while empty); then collapsed
+  _Snoozed_ and _Settled_ (the latest ten, plus "Search all threads", the command palette).
+  Only _Needs you_ rows stay at full strength, the rest are dimmed and nothing flashes, so the
+  rail does not compete with the thread. The sidebar footer (Settings, Pull requests, Issues,
+  Usage, updates) stays at the bottom.
+- **New thread:** from the board it asks for a project (the "New thread in…" picker); from the
+  rail it starts in the project on screen (Shift-click picks). Either way the regular draft
+  composer opens beside the rail, so model, worktree and `t3.json` defaults work as usual.
 - **Layout:** one **swimlane per project** (rows; projects with Needs-you cards first, then
   sidebar order; collapsible; hidden when empty), crossed with three **lanes** (columns): _Needs you_ → _Working_ → _Done_.
   A project filter and a text filter sit in the header.
@@ -71,24 +89,19 @@ drives the fake live simulation and the theme.
   lanes sort newest first. A merged or settled thread leaves the board but stays in the
   sidebar, and it comes back with Reopen (thread view, or Undo right after settling).
 - **Snooze:** a snoozed thread leaves the board until it wakes, then returns to its lane on
-  top with a "Woke" chip (cleared once you peek or open it). It wakes early if it starts waiting
-  on you. Snooze sits in the peek (not while an approval waits); Undo right after snoozing,
-  and "Wake now" in the thread view.
+  top with a "Woke" chip (cleared once you open it). It wakes early if it starts waiting
+  on you. Snooze sits in the card menu; Undo right after snoozing, and "Wake now" in the
+  thread view. Snoozed threads stay reachable in the rail's _Snoozed_ section.
 - **Card:** status (icon, label, working time) and time since last activity; the title; a grey
   line from thread state, only when it adds something (the running command or tool call, or the
   last assistant message of a finished turn); for Needs-you cards, the request itself with
   **quick actions** (Approve/Deny, answer options, Retry, switch model, Fix checks/Open PR); PR,
-  diff and queued chips. Project, branch and model stay off the card (the swimlane and the peek
-  carry them).
-- **Click:** opens the **peek**, a panel on the **left** of the lanes with the popover's
-  floating look, pushing the lanes aside: pending request, the latest exchange (your last
-  message and the agent's last reply, in the order sent, so a follow-up shows at once), PR,
-  changed files, recent activity, actions (Stop, Create/Open PR, Settle, Snooze) and a
-  composer. You stay on the board. A follow-up sent while the agent runs is queued.
-- **Ctrl-click (Cmd-click on macOS):** navigates to the full thread view. The peek also has
-  "Open thread", and the thread view links back to the board.
-- **Keyboard:** arrows move between cards (up/down walk a lane across projects), Enter peeks,
-  Mod+Enter opens, Esc closes the panel, Mod+Shift+B toggles the board.
+  diff and queued chips. Project, branch and model stay off the card (the swimlane and the thread
+  view carry them).
+- **Click:** opens the thread beside the rail (there is no peek). A card's "…" menu has Stop
+  (while a run is active), Settle, and Snooze; the rail rows have the same menu.
+- **Keyboard:** arrows move between cards on the board (up/down walk a lane across projects),
+  Enter opens. No shortcut to toggle the board yet.
 - **Live:** cards slide to their new lane once (short FLIP transition) and flash once.
   Nothing animates continuously.
 
@@ -100,32 +113,33 @@ drives the fake live simulation and the theme.
    signing secrets, so a fork nightly would be a new, smaller workflow. For personal use, a
    local `vp run dist:desktop:dmg:arm64` build needs neither.
 
-## Remaining work (review, 2026-11-25)
+## Remaining work (review, 2026-11-27)
 
 Gaps against the UX draft, roughly by value:
 
-1. Project filter in the header (only the text search exists).
+1. Project filter in the board header (only the text search exists).
 2. "Woke" chip on a card after a snoozed thread wakes.
-3. A way from the thread view back to the board (today: footer icon or palette).
-4. Peek: changed files and recent activity; "Create PR" when there is a diff and no PR.
-5. New thread without leaving the board (needs a server RPC; see decision log).
-6. Keyboard shortcut to open the board.
-7. "Queued" chip when a follow-up waits behind a running turn (`hasQueuedTurnStart`).
-8. Remember collapsed swimlanes between visits.
+3. Keyboard shortcut to toggle between the board and the last thread.
+4. "Queued" chip when a follow-up waits behind a running turn (`hasQueuedTurnStart`).
+5. Remember collapsed swimlanes and rail sections between visits.
+6. Rail rows lack the old sidebar's row menu (rename, pin, archive, delete, copy path); those
+   live in the thread view or the command palette for now.
+7. Settled threads beyond the latest ten are only reachable through search.
 
-Quality gaps: a browser test for the board page (only logic unit tests exist); a check of the
-Electron app (macOS window buttons vs the header); a remote environment; a profile with a few
-hundred threads (the footer badge derives lanes on every shell change).
+Quality gaps: a browser test for the board and the rail (only logic unit tests exist); a check of
+the Electron app (macOS window buttons vs the board header); a remote environment; a profile
+with a few hundred threads (the rail and the footer badge derive lanes on every shell change).
 
 ## Phases
 
-| #   | Phase               | Output                                                                                  | Status                     |
-| --- | ------------------- | --------------------------------------------------------------------------------------- | -------------------------- |
-| 0   | Vision and setup    | This doc, the fork, the T3 project                                                      | done                       |
-| 1   | UX prototype        | Clickable mock with fake threads: lanes, card anatomy, click and Ctrl-click flow        | done                       |
-| 2   | Data spike          | Map lanes, cards and the peek to real thread state in client-runtime                    | done                       |
-| 3   | Build               | Board behind a Labs toggle, in small steps (shell → lanes → cards → peek → live polish) | steps 1–4 done; see review |
-| 4   | Upstream (optional) | Ideas discussion upstream with a demo                                                   | -                          |
+| #   | Phase               | Output                                                                                  | Status           |
+| --- | ------------------- | --------------------------------------------------------------------------------------- | ---------------- |
+| 0   | Vision and setup    | This doc, the fork, the T3 project                                                      | done             |
+| 1   | UX prototype        | Clickable mock with fake threads: lanes, card anatomy, click and Ctrl-click flow        | done             |
+| 2   | Data spike          | Map lanes, cards and the peek to real thread state in client-runtime                    | done             |
+| 3   | Build               | Board behind a Labs toggle, in small steps (shell → lanes → cards → peek → live polish) | steps 1–4 done   |
+| 3b  | Board as home       | Board is the home page; folds into a rail beside the thread; no peek                    | done; see review |
+| 4   | Upstream (optional) | Ideas discussion upstream with a demo                                                   | -                |
 
 ## Data map (phase 2)
 
@@ -139,18 +153,17 @@ lanes and most of the card cost no new subscriptions.
 | Lane: approval, question, failed, limited, working, waiting, finished | `resolveSidebarRowStatus` (`apps/web/src/components/Sidebar.logic.ts`) over shell flags: `hasPendingApprovals`, `hasPendingUserInput`, `source.pendingRuntimeRequest.kind`, `runtime` (`status`, `lastErrorClass`), `latestRun` | None. Lives in `apps/web`, fine for a web-only board.                                             |
 | Off the board: settled, snoozed, woke                                 | `settledOverride`, `snoozedUntil`; `effectiveSnoozed`, `threadWokeAt`, `canSnooze` in `client-runtime/src/state/threadSettled.ts`; commands in `threadCommands.ts`                                                              | None.                                                                                             |
 | PR chip, failing checks → _Needs you_                                 | `pullRequests[].snapshot`: `state`, `checksState` (`passing`/`failing`/`pending`), `title`, `additions`/`deletions`; `resolveThreadCurrentPullRequestLink`                                                                      | No "x of n" check count. Failing check names only in `watch.failedChecks` when the PR is watched. |
-| Grey line                                                             | Not available: the server sends `latestVisibleMessage: null` in every shell on purpose (message bodies stay in thread detail so shell hydration does not grow with transcripts)                                                 | Not shown on cards (decided); the peek reads it from thread detail.                               |
+| Grey line                                                             | Not available: the server sends `latestVisibleMessage: null` in every shell on purpose (message bodies stay in thread detail so shell hydration does not grow with transcripts)                                                 | Not shown on cards (decided).                                                                     |
 | Request content (approval command, question and options)              | `environmentThreadDetails.pendingRequestsAtom(ref)`, which subscribes to that thread's detail; upstream already uses it for waiting child threads                                                                               | Read only by Needs-you cards.                                                                     |
 | Failure and usage limit text                                          | `runtime.lastError`, `lastErrorClass`, `usageLimitResetAt`, `limitRecovery`                                                                                                                                                     | None.                                                                                             |
 | Diff chip                                                             | PR snapshot `additions`/`deletions` when a PR exists                                                                                                                                                                            | No per-turn diff stats in the shell (the sidebar's `latestRunDiff` is a stub returning null).     |
 | Times: last activity, working duration, waiting since                 | `updatedAt`; `runtime.activityStartedAt` / `latestRun.startedAt`; `pendingRuntimeRequest.createdAt`                                                                                                                             | None.                                                                                             |
 | Queued follow-up                                                      | `hasQueuedTurnStart` (`threadSettled.ts`)                                                                                                                                                                                       | A flag, not a count.                                                                              |
 | Started by a scheduled task                                           | Not checked yet (`lineage`, `linkOrigin`, `workflowRun` are candidates)                                                                                                                                                         | Drop the chip for v1 unless one of these says it.                                                 |
-| Peek: summary, files, activity                                        | Thread detail (`createEnvironmentThreadDetailAtoms`, `threadDetail.ts`), checkpoints (`threadCheckpoints.ts`)                                                                                                                   | Subscribe only while the peek is open.                                                            |
+| (Former peek) summary, files, activity                                | Thread detail (`createEnvironmentThreadDetailAtoms`, `threadDetail.ts`), checkpoints (`threadCheckpoints.ts`)                                                                                                                   | Not needed since the peek is gone.                                                                |
 
 **Performance rule:** the board subscribes to nothing per card beyond the shells it already
-has. Thread detail is fetched for the open peek and, if we choose that route, for Needs-you
-cards (few, bounded). No per-card PR status queries: the shell's PR snapshot is enough.
+has. Thread detail is fetched only for Needs-you cards (few, bounded). No per-card PR status queries: the shell's PR snapshot is enough.
 
 ## Decision log
 
@@ -213,6 +226,18 @@ Add new entries at the bottom: date, decision, reason.
   cards (server preview only if that proves costly); checks show running/failing without
   counts, failing names only when the PR is watched; the diff chip shows only with a PR (file
   list in the peek); the grey line uses the latest visible message, also while running.
+
+- **2026-11-27** The board becomes the main overview: T3 Code opens on it (`/`), and opening
+  or starting a thread folds it into a rail beside the thread instead of hiding it. Supersedes
+  the full-screen-with-hidden-sidebar entry and the "New thread leaves the board" entry.
+- **2026-11-27** The rail replaces upstream's thread list in the sidebar while the board is on.
+  Reason: one navigation model instead of two; upstream's `Sidebar` is left untouched, so
+  merges stay cheap, at the cost of the rail not getting new sidebar features for free.
+- **2026-11-27** The peek is gone. Reason: once opening a thread keeps the board in view, the
+  peek duplicated the thread view. Settle, snooze and stop moved to a card menu.
+- **2026-11-27** The sidebar footer's pages (Settings, Pull requests, Issues, Usage) stay in
+  the rail's footer, and sit in the board header when the board fills the window.
+- **2026-11-27** Implemented directly in the app, without a prototype round.
 
 ## Prior art (upstream, all closed)
 

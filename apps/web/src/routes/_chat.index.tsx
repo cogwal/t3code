@@ -7,6 +7,8 @@ import { useEffect, useEffectEvent, useRef, useState } from "react";
 
 import { isElectron } from "../env";
 import { NoProjectsHero } from "../components/NoProjectsHero";
+import { ThreadBoardPage } from "../components/board/ThreadBoardPage";
+import { useClientSettings, useClientSettingsHydrated } from "../hooks/useSettings";
 import { sortScopedProjectsForSidebar } from "../components/Sidebar.logic";
 import { Button } from "../components/ui/button";
 import { HostedEmptyState } from "../components/HostedEmptyState";
@@ -25,13 +27,25 @@ import { useEnvironments } from "../state/environments";
 function ChatIndexRouteView() {
   const { authGateState } = Route.useRouteContext();
   const { environments, isReady } = useEnvironments();
+  const threadBoardEnabled = useClientSettings((settings) => settings.threadBoardEnabled);
+  // Settings load after the first render; picking the draft landing early would start a draft.
+  const clientSettingsHydrated = useClientSettingsHydrated();
 
   if (authGateState.status === "hosted-static") {
     if (!isReady) return null;
     if (environments.length === 0) return <HostedEmptyState />;
   }
 
-  return <IndexDraftLanding />;
+  if (!clientSettingsHydrated) return null;
+  return threadBoardEnabled ? <BoardHome /> : <IndexDraftLanding />;
+}
+
+/** Fork: with the board on, home is the board instead of a fresh draft. */
+function BoardHome() {
+  const projects = useProjects();
+  const bootstrapped = useAllEnvironmentShellsBootstrapped();
+  if (projects.length === 0) return bootstrapped ? <NoProjectsHero /> : null;
+  return <ThreadBoardPage />;
 }
 
 function IndexDraftLanding() {

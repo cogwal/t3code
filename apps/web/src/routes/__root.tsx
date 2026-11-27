@@ -43,7 +43,7 @@ import { StandalonePage, StandalonePageHeader } from "../components/ui/standalon
 import { SharedTooltipProvider } from "../components/ui/shared-tooltip";
 import { AnchoredToastProvider, ToastProvider } from "../components/ui/toast";
 import { isElectron } from "../env";
-import { useClientSettings } from "../hooks/useSettings";
+import { getClientSettings, useClientSettings } from "../hooks/useSettings";
 import {
   deriveLogicalProjectKeyFromSettings,
   derivePhysicalProjectKeyFromPath,
@@ -156,6 +156,7 @@ function RootRouteView() {
 
 function RootRouteBranch() {
   const pathname = useLocation({ select: (location) => location.pathname });
+  const threadBoardEnabled = useClientSettings((settings) => settings.threadBoardEnabled);
   const { authGateState } = Route.useRouteContext();
   const primaryEnvironmentAuthenticated = authGateState.status === "authenticated";
   // A sync IPC read; the setting only changes across a relaunch.
@@ -218,8 +219,8 @@ function RootRouteBranch() {
   const appShell = (
     <CommandPalette>
       {/* Setup starts with an empty workspace, so the Welcome page has no thread list.
-          The thread board is full screen and lists every thread itself. */}
-      <AppSidebarLayout showSidebar={!isWelcome && pathname !== "/board"}>
+          The thread board is the home page, full screen, and lists every thread itself. */}
+      <AppSidebarLayout showSidebar={!isWelcome && !(threadBoardEnabled && pathname === "/")}>
         <Outlet />
       </AppSidebarLayout>
     </CommandPalette>
@@ -392,7 +393,8 @@ function EventRouter({
         );
       useUiStateStore.getState().setProjectExpanded(bootstrapProjectKey, true);
 
-      if (readPathname() !== "/") {
+      // Fork: with the board on, the board is home; stay on it.
+      if (readPathname() !== "/" || getClientSettings().threadBoardEnabled) {
         return;
       }
       if (skipInitialBootstrapNavigationRef.current) {

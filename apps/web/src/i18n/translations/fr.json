@@ -13044,13 +13044,11 @@
   "3d621619bad5946d": "En cours",
   "1537f05cc9b5fbc1": "Terminé",
   "c8d14c90bd6cd8dd": "Vérifications en échec",
-  "378a63bdf3519c5e": "Retour",
   "6456fecfcaa2109d": "Rechercher des fils sur le tableau",
   "f1f55521bea76543": "Tableau",
-  "485dca271e0cf399": "Tableau",
   "3d9b354325f8f174": "Aucun fil ne correspond.",
   "1494b7c1d04e0d46": "Le tableau est vide. Les fils en cours, ceux qui attendent une action de votre part et ceux qui sont terminés apparaissent ici.",
-  "6346a23d8d447014": "Ajoute en bas de la barre latérale un tableau de tous les fils. Les fils passent d’eux-mêmes entre Pour vous, En cours et Terminé, regroupés par projet.",
+  "1df19884ab0b0a09": "Fait d’un tableau de tous les fils votre page d’accueil. Les fils passent d’eux-mêmes entre Pour vous, En cours et Terminé ; en ouvrir un replie le tableau dans la barre latérale.",
   "cb65b071f68809cc": "Tableau des fils",
   "c662a9233320e2a3": "bêta kanban colonnes couloirs vue d’ensemble pour vous en cours terminé",
   "aa14acb0ea65d943": "Vérifications en cours",
@@ -13069,26 +13067,9 @@
     "."
   ],
   "30e5685f395a35b8": "Ouvrir la pull request",
-  "e654396f19a21def": "Détails du fil {title}",
-  "b4013dbb802089b2": "Fermer les détails",
-  "89a073988bdb4b92": "Marque le fil comme terminé et le retire du tableau",
-  "149c9b92febb3d73": "Retire le fil du tableau jusqu’à son réveil",
-  "084cdbd230901fd6": "Impossible d’envoyer votre message.",
-  "f20fcc56c1195909": "Mettre une relance en file…",
-  "31edc03e0a69bc68": "Envoyer une relance…",
-  "cb290ed8899e0ba7": [
-    "Ouvrir la pull request #",
-    {
-      "i": 1,
-      "k": "_gt_value_1",
-      "v": "v"
-    }
-  ],
   "39b4070d872d2028": "Mettre en veille",
   "6badf1ab0be9364c": "Ouvrir le tableau",
   "aed763efb0a6d555": "Nouveau fil",
-  "e2f5a3551c85ac34": "Vous",
-  "7433207270b89442": "Derniers messages",
   "717c1c47a852a1a5": "Mettre la narration en pause",
   "0eceb5780908eb6c": "Lire à voix haute",
   "3ee98da81538c6de": "Impossible de lire la narration.",
@@ -13097,5 +13078,13 @@
   "5807c08e225c6b3d": "Télécharger",
   "0d50b5bfe7151ece": "Impossible de télécharger le fichier",
   "eb1fd384ad5919dd": "Note interne",
-  "b45f0b467e9406d0": "Répondre au client"
+  "b45f0b467e9406d0": "Répondre au client",
+  "08bd8cd7b2ed4f06": "Le retire du tableau",
+  "82d76982135006eb": "Nouveau fil (Maj+clic pour choisir un projet)",
+  "da37e73cfb9fce24": "Reportés",
+  "79f3b731658564be": "Clos",
+  "36c06d0649b5c076": "Ouvrir le brouillon {title}",
+  "ec8669a8033856b1": "Aucun fil sur le tableau.",
+  "52b3caafc19be3b2": "Rechercher dans tous les fils",
+  "a94f4f487f873c7c": "Brouillon"
 }

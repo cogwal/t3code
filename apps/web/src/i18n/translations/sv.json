@@ -13051,13 +13051,11 @@
   "3d621619bad5946d": "Arbetar",
   "1537f05cc9b5fbc1": "Klar",
   "c8d14c90bd6cd8dd": "Kontroller misslyckades",
-  "378a63bdf3519c5e": "Tillbaka",
   "6456fecfcaa2109d": "Sök trådar på tavlan",
   "f1f55521bea76543": "Tavla",
-  "485dca271e0cf399": "Tavla",
   "3d9b354325f8f174": "Inga trådar matchar.",
   "1494b7c1d04e0d46": "Tavlan är tom. Trådar som arbetar, väntar på dig eller är klara visas här.",
-  "6346a23d8d447014": "Lägger till en tavla med alla trådar längst ned i sidofältet. Trådarna flyttar själva mellan Behöver dig, Arbetar och Klar, grupperade per projekt.",
+  "1df19884ab0b0a09": "Gör en tavla med alla trådar till din startsida. Trådar flyttas själva mellan Behöver dig, Arbetar och Klar; öppnar du en fälls tavlan ihop i sidofältet.",
   "cb65b071f68809cc": "Trådtavla",
   "c662a9233320e2a3": "beta kanban kolumner banor översikt behöver dig arbetar klar",
   "aa14acb0ea65d943": "Kontroller körs",
@@ -13076,26 +13074,9 @@
     "."
   ],
   "30e5685f395a35b8": "Öppna pull request",
-  "e654396f19a21def": "Tråddetaljer för {title}",
-  "b4013dbb802089b2": "Stäng detaljer",
-  "89a073988bdb4b92": "Markerar tråden som klar och tar bort den från tavlan",
-  "149c9b92febb3d73": "Tar bort tråden från tavlan tills den vaknar",
-  "084cdbd230901fd6": "Det gick inte att skicka ditt meddelande.",
-  "f20fcc56c1195909": "Köa en uppföljning…",
-  "31edc03e0a69bc68": "Skicka en uppföljning…",
-  "cb290ed8899e0ba7": [
-    "Öppna pull request #",
-    {
-      "i": 1,
-      "k": "_gt_value_1",
-      "v": "v"
-    }
-  ],
   "39b4070d872d2028": "Snooza",
   "6badf1ab0be9364c": "Öppna tavlan",
   "aed763efb0a6d555": "Ny tråd",
-  "e2f5a3551c85ac34": "Du",
-  "7433207270b89442": "Senaste meddelanden",
   "717c1c47a852a1a5": "Pausa uppläsningen",
   "0eceb5780908eb6c": "Läs upp",
   "3ee98da81538c6de": "Det gick inte att spela upp uppläsningen.",
@@ -13104,5 +13085,13 @@
   "5807c08e225c6b3d": "Ladda ned",
   "0d50b5bfe7151ece": "Det gick inte att ladda ned filen",
   "eb1fd384ad5919dd": "Intern anteckning",
-  "b45f0b467e9406d0": "Svara kunden"
+  "b45f0b467e9406d0": "Svara kunden",
+  "08bd8cd7b2ed4f06": "Tar bort den från tavlan",
+  "82d76982135006eb": "Ny tråd (Skift-klicka för att välja ett projekt)",
+  "da37e73cfb9fce24": "Snoozade",
+  "79f3b731658564be": "Klara",
+  "36c06d0649b5c076": "Öppna utkastet {title}",
+  "ec8669a8033856b1": "Inga trådar på tavlan.",
+  "52b3caafc19be3b2": "Sök i alla trådar",
+  "a94f4f487f873c7c": "Utkast"
 }

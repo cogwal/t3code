@@ -1770,7 +1770,7 @@ function OpenCommandPaletteDialog(props: {
       title: gt("Open board"),
       icon: <SquareKanbanIcon className={ITEM_ICON_CLASS} />,
       run: async () => {
-        await navigate({ to: "/board" });
+        await navigate({ to: "/" });
       },
     });
   }

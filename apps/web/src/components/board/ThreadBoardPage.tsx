@@ -1,29 +1,22 @@
 import { scopeThreadRef } from "@t3tools/client-runtime/environment";
 import { useNavigate } from "@tanstack/react-router";
 import { msg, T, useGT, useMessages } from "gt-react";
-import {
-  ArrowLeftIcon,
-  ChevronDownIcon,
-  SearchIcon,
-  SquareKanbanIcon,
-  SquarePenIcon,
-} from "lucide-react";
-import { useEffect, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { ChevronDownIcon, SearchIcon, SquarePenIcon } from "lucide-react";
+import { useState, type KeyboardEvent } from "react";
 
 import { isElectron } from "~/env";
-import { openCommandPalette } from "../../commandPaletteBus";
 import { useSidebarProjectGroups } from "../../hooks/useSidebarProjectGroups";
 import { cn } from "../../lib/utils";
 import { buildThreadRouteParams } from "../../threadRoutes";
 import { ProjectFavicon } from "../ProjectFavicon";
-import { useNavigateToMainApp } from "../sidebar/mainAppLocation";
 import { Button } from "../ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
 import { SidebarInset } from "../ui/sidebar";
 import { ThreadBoardCard } from "./ThreadBoardCard";
-import { ThreadBoardPeek } from "./ThreadBoardPeek";
 import { ThreadBoardUndoNotice } from "./ThreadBoardUndoNotice";
+import { ThreadBoardUtilities } from "./ThreadBoardUtilities";
 import { useBoardCards } from "./useBoardCards";
+import { useBoardNewThread } from "./useBoardNewThread";
 import {
   BOARD_LANES,
   buildBoardSwimlanes,
@@ -39,39 +32,25 @@ const LANE_PRESENTATION: Record<BoardLane, { label: string; dotClassName: string
   done: { label: msg("Done", { $context: "board lane" }), dotClassName: "bg-success" },
 };
 
-/** Full-screen board of every thread, in project swimlanes crossed with state lanes. */
+/**
+ * The home page: every thread, in project swimlanes crossed with state lanes. Opening a card
+ * or starting a thread folds the board into the sidebar rail (ThreadBoardRail).
+ */
 export function ThreadBoardPage() {
   const gt = useGT();
   const m = useMessages();
   const navigate = useNavigate();
-  const navigateBack = useNavigateToMainApp();
+  const startNewThread = useBoardNewThread();
   const boardCards = useBoardCards();
   const groups = useSidebarProjectGroups();
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set());
-  const [peekKey, setPeekKey] = useState<string | null>(null);
-  // oxlint-disable-next-line t3code/no-unreasoned-state-sync -- window keydown listener: Escape closes the peek wherever focus is
-  useEffect(() => {
-    if (peekKey === null) return;
-    const onKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape" && !event.defaultPrevented) setPeekKey(null);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [peekKey]);
 
   const needle = query.trim().toLowerCase();
   const cards = needle
     ? boardCards.filter((card) => card.thread.title.toLowerCase().includes(needle))
     : boardCards;
   const swimlanes = buildBoardSwimlanes(groups, cards);
-  // A thread that leaves the board (settled, snoozed, filtered out) closes its peek.
-  const peekCard = cards.find((card) => cardKey(card) === peekKey) ?? null;
-  const peekGroup =
-    peekCard === null
-      ? null
-      : (swimlanes.find(({ lanes }) => BOARD_LANES.some((lane) => lanes[lane].includes(peekCard)))
-          ?.group ?? null);
 
   const openThread = (card: BoardCard) => {
     void navigate({
@@ -79,27 +58,10 @@ export function ThreadBoardPage() {
       params: buildThreadRouteParams(scopeThreadRef(card.thread.environmentId, card.thread.id)),
     });
   };
-  // Click peeks; Ctrl-click (Cmd-click on macOS) opens the full thread.
-  const onCardOpen = (card: BoardCard, event: MouseEvent<HTMLButtonElement>) => {
-    if (event.metaKey || event.ctrlKey) {
-      openThread(card);
-      return;
-    }
-    setPeekKey(peekKey === cardKey(card) ? null : cardKey(card));
-  };
   const onBoardKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const current =
       event.target instanceof HTMLElement ? event.target.dataset.boardCard : undefined;
-    if (current === undefined) return;
-    if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
-      const card = cards.find((candidate) => cardKey(candidate) === current);
-      if (card) {
-        event.preventDefault();
-        openThread(card);
-      }
-      return;
-    }
-    if (!ARROW_KEYS.has(event.key)) return;
+    if (current === undefined || !ARROW_KEYS.has(event.key)) return;
     const grid = swimlanes
       .filter(({ group }) => !collapsed.has(group.projectKey))
       .map(({ lanes }) => BOARD_LANES.map((lane) => lanes[lane].map(cardKey)));
@@ -107,8 +69,6 @@ export function ThreadBoardPage() {
     if (target === null) return;
     event.preventDefault();
     event.currentTarget.querySelector<HTMLElement>(`[data-board-card="${target}"]`)?.focus();
-    // With the peek open, it follows the focused card.
-    if (peekKey !== null) setPeekKey(target);
   };
   const toggleCollapsed = (projectKey: string) => {
     const next = new Set(collapsed);
@@ -124,20 +84,8 @@ export function ThreadBoardPage() {
           isElectron && "drag-region wco:pr-(--workspace-native-controls-inset)",
         )}
       >
-        <div className="flex w-100 shrink-0 items-center gap-1.5">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={gt("Back", { $context: "leave the board" })}
-            onClick={() => void navigateBack()}
-          >
-            <ArrowLeftIcon />
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => openCommandPalette({ open: "new-thread-in" })}
-          >
+        <div className="flex w-100 min-w-0 items-center gap-1.5">
+          <Button size="sm" onClick={() => startNewThread()}>
             <SquarePenIcon aria-hidden />
             <T>New thread</T>
           </Button>
@@ -154,24 +102,12 @@ export function ThreadBoardPage() {
             />
           </InputGroup>
         </div>
-        <h1 className="flex shrink-0 items-center gap-2 text-sm font-semibold">
-          <SquareKanbanIcon aria-hidden className="size-4" />
-          <T>Board</T>
-        </h1>
         <span className="flex-1" />
         <ThreadBoardUndoNotice />
+        <ThreadBoardUtilities />
       </header>
 
       <div className="flex min-h-0 flex-1">
-        {peekCard !== null && peekGroup !== null ? (
-          <ThreadBoardPeek
-            key={cardKey(peekCard)}
-            card={peekCard}
-            project={peekGroup}
-            onClose={() => setPeekKey(null)}
-            onOpenThread={() => openThread(peekCard)}
-          />
-        ) : null}
         <div
           data-board-scroll=""
           onKeyDown={onBoardKeyDown}
@@ -255,8 +191,7 @@ export function ThreadBoardPage() {
                                 key={card.thread.id}
                                 card={card}
                                 cardKey={cardKey(card)}
-                                selected={peekCard === card}
-                                onOpen={(event) => onCardOpen(card, event)}
+                                onOpen={() => openThread(card)}
                               />
                             ))}
                           </div>

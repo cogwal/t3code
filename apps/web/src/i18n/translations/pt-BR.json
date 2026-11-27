@@ -13044,13 +13044,11 @@
   "3d621619bad5946d": "Trabalhando",
   "1537f05cc9b5fbc1": "Pronta",
   "c8d14c90bd6cd8dd": "Verificações falhando",
-  "378a63bdf3519c5e": "Voltar",
   "6456fecfcaa2109d": "Pesquisar threads no quadro",
   "f1f55521bea76543": "Quadro",
-  "485dca271e0cf399": "Quadro",
   "3d9b354325f8f174": "Nenhuma thread corresponde.",
   "1494b7c1d04e0d46": "O quadro está vazio. Threads em andamento, esperando por você ou prontas aparecem aqui.",
-  "6346a23d8d447014": "Adiciona ao rodapé da barra lateral um quadro com todas as threads. As threads passam sozinhas entre Precisa de você, Trabalhando e Pronta, agrupadas por projeto.",
+  "1df19884ab0b0a09": "Faz de um quadro com todas as threads a sua página inicial. As threads passam sozinhas entre Precisa de você, Trabalhando e Pronto; ao abrir uma, o quadro se recolhe na barra lateral.",
   "cb65b071f68809cc": "Quadro de threads",
   "c662a9233320e2a3": "beta kanban colunas raias visão geral precisa de você trabalhando pronta",
   "aa14acb0ea65d943": "Verificações em andamento",
@@ -13069,26 +13067,9 @@
     "."
   ],
   "30e5685f395a35b8": "Abrir pull request",
-  "e654396f19a21def": "Detalhes da thread {title}",
-  "b4013dbb802089b2": "Fechar detalhes",
-  "89a073988bdb4b92": "Marca a thread como concluída e a tira do quadro",
-  "149c9b92febb3d73": "Tira a thread do quadro até ela despertar",
-  "084cdbd230901fd6": "Não foi possível enviar sua mensagem.",
-  "f20fcc56c1195909": "Enfileirar um acompanhamento…",
-  "31edc03e0a69bc68": "Enviar um acompanhamento…",
-  "cb290ed8899e0ba7": [
-    "Abrir pull request #",
-    {
-      "i": 1,
-      "k": "_gt_value_1",
-      "v": "v"
-    }
-  ],
   "39b4070d872d2028": "Adiar",
   "6badf1ab0be9364c": "Abrir quadro",
   "aed763efb0a6d555": "Nova thread",
-  "e2f5a3551c85ac34": "Você",
-  "7433207270b89442": "Mensagens mais recentes",
   "717c1c47a852a1a5": "Pausar narração",
   "0eceb5780908eb6c": "Ler em voz alta",
   "3ee98da81538c6de": "Não foi possível reproduzir a narração.",
@@ -13097,5 +13078,13 @@
   "5807c08e225c6b3d": "Baixar",
   "0d50b5bfe7151ece": "Não foi possível baixar o arquivo",
   "eb1fd384ad5919dd": "Nota interna",
-  "b45f0b467e9406d0": "Responder ao cliente"
+  "b45f0b467e9406d0": "Responder ao cliente",
+  "08bd8cd7b2ed4f06": "Tira do quadro",
+  "82d76982135006eb": "Nova thread (Shift+clique para escolher um projeto)",
+  "da37e73cfb9fce24": "Adiadas",
+  "79f3b731658564be": "Concluídas",
+  "36c06d0649b5c076": "Abrir rascunho {title}",
+  "ec8669a8033856b1": "Nenhuma thread no quadro.",
+  "52b3caafc19be3b2": "Pesquisar em todas as threads",
+  "a94f4f487f873c7c": "Rascunho"
 }

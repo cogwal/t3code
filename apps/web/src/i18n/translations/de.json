@@ -13044,13 +13044,11 @@
   "3d621619bad5946d": "Arbeitet",
   "1537f05cc9b5fbc1": "Fertig",
   "c8d14c90bd6cd8dd": "Checks fehlgeschlagen",
-  "378a63bdf3519c5e": "Zurück",
   "6456fecfcaa2109d": "Threads auf dem Board durchsuchen",
   "f1f55521bea76543": "Board",
-  "485dca271e0cf399": "Board",
   "3d9b354325f8f174": "Keine passenden Threads.",
   "1494b7c1d04e0d46": "Das Board ist leer. Threads, die laufen, auf dich warten oder fertig sind, erscheinen hier.",
-  "6346a23d8d447014": "Fügt der Seitenleiste unten ein Board mit allen Threads hinzu. Threads wandern von selbst zwischen „Braucht dich“, „Arbeitet“ und „Fertig“, gruppiert nach Projekt.",
+  "1df19884ab0b0a09": "Macht ein Board mit allen Threads zu deiner Startseite. Threads wandern von selbst zwischen „Braucht dich“, „Arbeitet“ und „Fertig“; öffnest du einen, klappt das Board in die Seitenleiste.",
   "cb65b071f68809cc": "Thread-Board",
   "c662a9233320e2a3": "beta kanban spalten bahnen übersicht braucht dich arbeitet fertig",
   "aa14acb0ea65d943": "Checks laufen",
@@ -13069,27 +13067,9 @@
     "."
   ],
   "30e5685f395a35b8": "Pull Request öffnen",
-  "e654396f19a21def": "Thread-Details für {title}",
-  "b4013dbb802089b2": "Details schließen",
-  "89a073988bdb4b92": "Markiert den Thread als erledigt und nimmt ihn vom Board",
-  "149c9b92febb3d73": "Nimmt den Thread vom Board, bis er wieder aufwacht",
-  "084cdbd230901fd6": "Deine Nachricht konnte nicht gesendet werden.",
-  "f20fcc56c1195909": "Folgenachricht einreihen…",
-  "31edc03e0a69bc68": "Folgenachricht senden…",
-  "cb290ed8899e0ba7": [
-    "Pull Request #",
-    {
-      "i": 1,
-      "k": "_gt_value_1",
-      "v": "v"
-    },
-    " öffnen"
-  ],
   "39b4070d872d2028": "Schlummern",
   "6badf1ab0be9364c": "Board öffnen",
   "aed763efb0a6d555": "Neuer Thread",
-  "e2f5a3551c85ac34": "Du",
-  "7433207270b89442": "Neueste Nachrichten",
   "717c1c47a852a1a5": "Vorlesen pausieren",
   "0eceb5780908eb6c": "Vorlesen",
   "3ee98da81538c6de": "Die Vertonung konnte nicht abgespielt werden.",
@@ -13098,5 +13078,13 @@
   "5807c08e225c6b3d": "Herunterladen",
   "0d50b5bfe7151ece": "Datei konnte nicht heruntergeladen werden",
   "eb1fd384ad5919dd": "Interne Notiz",
-  "b45f0b467e9406d0": "Dem Kunden antworten"
+  "b45f0b467e9406d0": "Dem Kunden antworten",
+  "08bd8cd7b2ed4f06": "Nimmt ihn vom Board",
+  "82d76982135006eb": "Neuer Thread (Umschalt-Klick, um ein Projekt zu wählen)",
+  "da37e73cfb9fce24": "Zurückgestellt",
+  "79f3b731658564be": "Erledigt",
+  "36c06d0649b5c076": "Entwurf {title} öffnen",
+  "ec8669a8033856b1": "Keine Threads auf dem Board.",
+  "52b3caafc19be3b2": "Alle Threads durchsuchen",
+  "a94f4f487f873c7c": "Entwurf"
 }

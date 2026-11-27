@@ -104,9 +104,7 @@ export function buildBoardSwimlanes<G extends BoardProjectGroup, C extends Board
   for (const group of groups) {
     const lanes = lanesByGroup.get(group.projectKey);
     if (lanes === undefined) continue;
-    lanes.needs.sort((a, b) => compareActivity(a, b));
-    lanes.working.sort((a, b) => compareActivity(b, a));
-    lanes.done.sort((a, b) => compareActivity(b, a));
+    sortLanes(lanes);
     swimlanes.push({ group, lanes });
   }
   return [
@@ -115,7 +113,26 @@ export function buildBoardSwimlanes<G extends BoardProjectGroup, C extends Board
   ];
 }
 
-function compareActivity(a: BoardSwimlaneCard, b: BoardSwimlaneCard): number {
+/** The rail's lanes: every project together, sorted like a swimlane. */
+export function buildRailLanes<C extends Pick<BoardSwimlaneCard, "lane" | "activityAt">>(
+  cards: ReadonlyArray<C>,
+): Readonly<Record<BoardLane, ReadonlyArray<C>>> {
+  const lanes: Record<BoardLane, C[]> = { needs: [], working: [], done: [] };
+  for (const card of cards) lanes[card.lane].push(card);
+  sortLanes(lanes);
+  return lanes;
+}
+
+function sortLanes(lanes: Record<BoardLane, Array<Pick<BoardSwimlaneCard, "activityAt">>>) {
+  lanes.needs.sort((a, b) => compareActivity(a, b));
+  lanes.working.sort((a, b) => compareActivity(b, a));
+  lanes.done.sort((a, b) => compareActivity(b, a));
+}
+
+function compareActivity(
+  a: Pick<BoardSwimlaneCard, "activityAt">,
+  b: Pick<BoardSwimlaneCard, "activityAt">,
+): number {
   return Date.parse(a.activityAt) - Date.parse(b.activityAt);
 }
 

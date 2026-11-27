@@ -5,7 +5,7 @@ import { memo } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 
 import { useAtomValue } from "@effect/atom-react";
-import { useClientSettings, useEnvironmentIdentificationMode } from "../../hooks/useSettings";
+import { useEnvironmentIdentificationMode } from "../../hooks/useSettings";
 import { shortcutLabelForCommand } from "../../keybindings";
 import {
   navigateHistory,
@@ -15,7 +15,6 @@ import {
 import { primaryServerKeybindingsAtom } from "../../state/server";
 import { cn } from "../../lib/utils";
 import { useIssuesSupported, usePullRequestsSupported } from "../../state/environments";
-import { ThreadBoardFooterIcon } from "../board/ThreadBoardFooterIcon";
 import { T3Wordmark } from "../T3Wordmark";
 import {
   resolveEnvironmentIdentificationPillLabel,
@@ -233,7 +232,6 @@ const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
   const isOnUtilityPage = useLocation({
     select: (location) => isSidebarUtilityPage(location.pathname),
   });
-  const threadBoardEnabled = useClientSettings((settings) => settings.threadBoardEnabled);
   const pullRequestsSupported = usePullRequestsSupported();
   const issuesSupported = useIssuesSupported();
   const closeMobileSidebar = () => {
@@ -251,10 +249,6 @@ const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
   const handleIssuesClick = () => {
     closeMobileSidebar();
     void navigate({ to: "/issues", search: readIssueListPreferences() });
-  };
-  const handleBoardClick = () => {
-    closeMobileSidebar();
-    void navigate({ to: "/board" });
   };
   const handleSettingsClick = () => {
     closeMobileSidebar();
@@ -286,13 +280,6 @@ const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
         </SidebarMenuItem>
       ) : (
         <>
-          {threadBoardEnabled ? (
-            <SidebarUtilityItem
-              icon={<ThreadBoardFooterIcon />}
-              label={gt("Board", { $context: "sidebar link to the thread board" })}
-              onClick={handleBoardClick}
-            />
-          ) : null}
           <SidebarUtilityItem
             icon={<SettingsIcon />}
             label={gt("Settings")}
