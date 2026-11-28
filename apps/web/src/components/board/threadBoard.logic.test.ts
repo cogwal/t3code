@@ -21,6 +21,9 @@ describe("resolveBoardLane", () => {
     ["preparing", "working"],
     ["working", "working"],
     ["waiting", "working"],
+    ["connecting", "working"],
+    ["reconnecting", "working"],
+    ["offline", "working"],
     ["ready", "done"],
   ])("puts a %s thread in %s", (status, lane) => {
     expect(resolveBoardLane({ status, pullRequestChecksFailing: false })).toBe(lane);

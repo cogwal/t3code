@@ -23,6 +23,7 @@ import {
   CircleXIcon,
   MessageCircleQuestionIcon,
   ShieldQuestionIcon,
+  UnplugIcon,
   UserRoundIcon,
   type LucideIcon,
 } from "lucide-react";
@@ -51,6 +52,21 @@ const STATUS_PRESENTATION: Record<
   SidebarThreadStatus,
   { label: string; icon: LucideIcon; className: string }
 > = {
+  connecting: {
+    label: msg("Connecting"),
+    icon: UnplugIcon,
+    className: "text-muted-foreground",
+  },
+  reconnecting: {
+    label: msg("Reconnecting"),
+    icon: UnplugIcon,
+    className: "text-muted-foreground",
+  },
+  offline: {
+    label: msg("Offline"),
+    icon: UnplugIcon,
+    className: "text-muted-foreground",
+  },
   preparing: {
     label: msg("Setting up"),
     icon: CircleDashedIcon,
@@ -111,7 +127,11 @@ export function BoardStatusLabel(props: { card: BoardCard }) {
   const checksFailing = card.lane === "needs" && card.status === "ready";
   const status = checksFailing ? CHECKS_FAILING_PRESENTATION : STATUS_PRESENTATION[card.status];
   const StatusIcon = status.icon;
-  const workingStartedAt = card.lane === "working" ? resolveWorkingStartedAt(card.thread) : null;
+  // No running clock while the connection is down: the agent may have stopped long ago.
+  const workingStartedAt =
+    card.lane === "working" && status.icon !== UnplugIcon
+      ? resolveWorkingStartedAt(card.thread)
+      : null;
   return (
     <span className={cn("flex min-w-0 items-center gap-1.5 text-xs font-medium", status.className)}>
       <StatusIcon aria-hidden className="size-3.5 shrink-0" />

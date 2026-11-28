@@ -96,7 +96,9 @@ drives the fake live simulation and the theme.
   A project filter and a text filter sit in the header.
 - **Lanes:** _Needs you_ holds approvals, questions, failed turns, usage limits and PRs with
   failing checks, oldest wait first. _Working_ holds setting up, working, and waiting
-  (on subagents or on background work the agent started, which it resumes from on its own). _Done_ holds finished turns (diff or PR), the same word the sidebar uses. Other
+  (on subagents or on background work the agent started, which it resumes from on its own),
+  plus running threads whose environment lost its connection (Connecting, Reconnecting,
+  Offline; no running clock). _Done_ holds finished turns (diff or PR), the same word the sidebar uses. Other
   lanes sort newest first. A merged or settled thread leaves the board but stays in the
   sidebar, and it comes back with Reopen (thread view, or Undo right after settling).
 - **Snooze:** a snoozed thread leaves the board until it wakes, then returns to its lane on

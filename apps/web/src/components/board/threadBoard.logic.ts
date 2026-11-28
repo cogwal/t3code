@@ -23,6 +23,10 @@ export function resolveBoardLane(input: BoardLaneInput): BoardLane {
     case "limited":
     case "failed":
       return "needs";
+    // The agent was running when its environment's connection dropped; its real state is unknown.
+    case "connecting":
+    case "reconnecting":
+    case "offline":
     case "preparing":
     case "working":
     // Waiting on a subagent, or on background work the agent started (a monitor, a running
