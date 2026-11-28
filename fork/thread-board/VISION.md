@@ -71,8 +71,9 @@ drives the fake live simulation and the theme.
   New thread and a **Resume** chip (the last thread or draft, "title ↗", kept across reloads) on
   the left; on the right the _Snoozed_ and _Settled_ menus (Settled lists the latest ten plus
   "Search all threads"), the search field, then the update pill, Pull requests, Issues, Usage
-  and Settings. The last swimlane grows so the lanes reach the bottom of the window. Settings
-  and Usage opened from the board keep the board behind them. A thread or draft open: the board
+  and Settings. The last swimlane grows so lanes with cards reach the bottom of the window;
+  empty lanes stay one short dashed row ("Nothing waiting", "Nothing running", "Nothing to
+  review"). Settings and Usage opened from the board keep the board behind them. A thread or draft open: the board
   folds into the **rail**, which replaces upstream's thread list in the sidebar.
 - **Home control:** a board icon (with the Needs-you count) sits beside the sidebar toggle in
   the title bar on every page but the board, so the way home stays when the sidebar is collapsed.
@@ -286,6 +287,8 @@ Add new entries at the bottom: date, decision, reason.
   service, tied to their accounts and branding; deleting the code would conflict on every
   upstream merge. Don't put the `T3CODE_CLERK_*` / `T3CODE_RELAY_URL` values in a local
   `.env`, or local builds get Connect back.
+- **2026-11-27** Empty lanes stay short, with a placeholder ("Nothing waiting"), while lanes with
+  cards still reach the bottom. Reason: full-height dashed boxes made the calm state look broken.
 
 ## Prior art (upstream, all closed)
 

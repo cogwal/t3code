@@ -13080,5 +13080,8 @@
   "52b3caafc19be3b2": "Buscar en todos los hilos",
   "a94f4f487f873c7c": "Borrador",
   "4e5a6e86a3565e8b": "Tablero",
-  "e37e75744340f109": "Tablero, {count} te necesitan"
+  "e37e75744340f109": "Tablero, {count} te necesitan",
+  "ba6e4141506f646b": "Nada pendiente",
+  "28d8c2fde218b6a3": "Nada en curso",
+  "968118fc56ec411c": "Nada que revisar"
 }

@@ -29,11 +29,24 @@ import {
   type BoardLane,
 } from "./threadBoard.logic";
 
-const LANE_PRESENTATION: Record<BoardLane, { label: string; dotClassName: string }> = {
-  needs: { label: msg("Needs you", { $context: "board lane" }), dotClassName: "bg-warning" },
-  working: { label: msg("Working", { $context: "board lane" }), dotClassName: "bg-info" },
-  done: { label: msg("Done", { $context: "board lane" }), dotClassName: "bg-success" },
-};
+const LANE_PRESENTATION: Record<BoardLane, { label: string; empty: string; dotClassName: string }> =
+  {
+    needs: {
+      label: msg("Needs you", { $context: "board lane" }),
+      empty: msg("Nothing waiting", { $context: "empty board lane" }),
+      dotClassName: "bg-warning",
+    },
+    working: {
+      label: msg("Working", { $context: "board lane" }),
+      empty: msg("Nothing running", { $context: "empty board lane" }),
+      dotClassName: "bg-info",
+    },
+    done: {
+      label: msg("Done", { $context: "board lane" }),
+      empty: msg("Nothing to review", { $context: "empty board lane" }),
+      dotClassName: "bg-success",
+    },
+  };
 
 /**
  * The home page: every thread, in project swimlanes crossed with state lanes. Opening a card
@@ -196,24 +209,31 @@ export function ThreadBoardPage(props: { background?: boolean } = {}) {
                     </button>
                     {isCollapsed ? null : (
                       <div className="mt-1 grid grow grid-cols-3 gap-2.5">
-                        {BOARD_LANES.map((lane) => (
-                          <div
-                            key={lane}
-                            className={cn(
-                              "flex min-h-13 flex-col gap-1.5 rounded-xl border p-1.5",
-                              lanes[lane].length === 0 ? "border-dashed" : "bg-muted/60",
-                            )}
-                          >
-                            {lanes[lane].map((card) => (
-                              <ThreadBoardCard
-                                key={card.thread.id}
-                                card={card}
-                                cardKey={cardKey(card)}
-                                onOpen={() => openThread(card.thread)}
-                              />
-                            ))}
-                          </div>
-                        ))}
+                        {BOARD_LANES.map((lane) =>
+                          // Empty lanes stay short, so a calm board does not read as broken.
+                          lanes[lane].length === 0 ? (
+                            <div
+                              key={lane}
+                              className="flex h-13 items-center justify-center self-start rounded-xl border border-dashed px-3 text-xs text-muted-foreground"
+                            >
+                              {m(LANE_PRESENTATION[lane].empty)}
+                            </div>
+                          ) : (
+                            <div
+                              key={lane}
+                              className="flex min-h-13 flex-col gap-1.5 rounded-xl border bg-muted/60 p-1.5"
+                            >
+                              {lanes[lane].map((card) => (
+                                <ThreadBoardCard
+                                  key={card.thread.id}
+                                  card={card}
+                                  cardKey={cardKey(card)}
+                                  onOpen={() => openThread(card.thread)}
+                                />
+                              ))}
+                            </div>
+                          ),
+                        )}
                       </div>
                     )}
                   </section>

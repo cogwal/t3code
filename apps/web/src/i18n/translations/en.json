@@ -13093,5 +13093,8 @@
   "52b3caafc19be3b2": "Search all threads",
   "a94f4f487f873c7c": "Draft",
   "4e5a6e86a3565e8b": "Board",
-  "e37e75744340f109": "Board, {count} need you"
+  "e37e75744340f109": "Board, {count} need you",
+  "ba6e4141506f646b": "Nothing waiting",
+  "28d8c2fde218b6a3": "Nothing running",
+  "968118fc56ec411c": "Nothing to review"
 }
